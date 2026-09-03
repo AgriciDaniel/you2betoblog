@@ -1,0 +1,204 @@
+diff --git a/src/services/article-saver.ts b/src/services/article-saver.ts
+index 0e0773a..6db74ca 100644
+--- a/src/services/article-saver.ts
++++ b/src/services/article-saver.ts
+@@ -34,6 +34,18 @@ export function sanitizeFilename(name: string): string {
+   return truncated || "Untitled Article";
+ }
+ 
++function yamlScalar(value: string | null | undefined): string {
++  return JSON.stringify(String(value ?? ""));
++}
++
++function yamlStringList(values: readonly string[]): string {
++  return JSON.stringify(
++    Array.from(
++      new Set(values.map((value) => value.trim()).filter(Boolean)),
++    ),
++  );
++}
++
+ export class ArticleSaver {
+   private app: App;
+   private settings: ArticleSavingSettings;
+@@ -342,6 +354,13 @@ export class ArticleSaver {
+     const tagsString = this.settings.addSavedTag
+       ? withSavedTagName(tagNames).join(", ")
+       : tagNames.join(", ");
++    const yamlTags = yamlStringList([
++      "yt2b",
++      "intake/saved",
++      ...(this.settings.addSavedTag
++        ? withSavedTagName(tagNames)
++        : tagNames),
++    ]);
+ 
+     const replacedWithDates = this.replaceDatePlaceholders(template, pubDate);
+ 
+@@ -358,7 +377,14 @@ export class ArticleSaver {
+       .replace(/{{content}}/g, () => content)
+       .replace(/{{tags}}/g, tagsString)
+       .replace(/{{guid}}/g, item.guid)
+-      .replace(/{{image}}/g, this.getFallbackHeroUrl(item));
++      .replace(/{{image}}/g, this.getFallbackHeroUrl(item))
++      // Safe placeholders are deliberately last. Remote values that contain
++      // placeholder text must remain data instead of triggering a second pass.
++      .replace(/{{titleYaml}}/g, () => yamlScalar(item.title))
++      .replace(/{{linkYaml}}/g, () => yamlScalar(item.link))
++      .replace(/{{authorYaml}}/g, () => yamlScalar(item.author))
++      .replace(/{{feedTitleYaml}}/g, () => yamlScalar(item.feedTitle))
++      .replace(/{{yt2bTagsYaml}}/g, () => yamlTags);
+   }
+ 
+ 
+@@ -706,13 +732,9 @@ export class ArticleSaver {
+ 
+       const existingFile = this.app.vault.getAbstractFileByPath(filePath);
+       if (existingFile instanceof TFile) {
+-        try {
+-          await this.app.fileManager.trashFile(existingFile);
+-        } catch (error) {
+-          if (!this.isMissingPathError(error)) {
+-            throw error;
+-          }
+-        }
++        throw new Error(
++          `Refusing to overwrite existing article: ${filePath}`,
++        );
+       } else if (existingFile !== null) {
+         throw new Error(
+           `Cannot save article because ${filePath} exists and is not a file.`,
+diff --git a/test_files/unit/services/article-saver.test.ts b/test_files/unit/services/article-saver.test.ts
+index 60f7b0b..f97a407 100644
+--- a/test_files/unit/services/article-saver.test.ts
++++ b/test_files/unit/services/article-saver.test.ts
+@@ -137,7 +137,58 @@ describe("ArticleSaver.saveArticle", () => {
+     expect(item.tags?.map((tag) => tag.name)).toEqual(["tech", "Saved"]);
+   });
+ 
+-  it("trashes an existing file at the same path before creating a new one", async () => {
++  it("quotes untrusted metadata in the vault-safe YAML placeholders", async () => {
++    const app = App.createMock();
++    const template = [
++      "---",
++      "type: yt2b-source",
++      "title: {{titleYaml}}",
++      "source_url: {{linkYaml}}",
++      "feed: {{feedTitleYaml}}",
++      "author: {{authorYaml}}",
++      "status: saved",
++      "tags: {{yt2bTagsYaml}}",
++      "---",
++      "",
++      "> [!warning] Untrusted source",
++      "",
++      "{{content}}",
++    ].join("\n");
++    const settings = createSettings({
++      defaultFolder: "Articles",
++      defaultTemplate: template,
++    });
++    const saver = new ArticleSaver(app, settings);
++    const item = createItem({
++      title: '{{author}} "title"\nstatus: approved',
++      link: 'https://example.com/{{title}}?quoted="yes"\nstatus: approved',
++      feedTitle: '{{link}} Feed "name"\nrights: own',
++      author: '{{feedTitle}} Author "name"\ntags: [trusted]',
++      tags: [
++        { name: "source/rss", color: "#000" },
++        { name: "{{title}} danger\n- injected", color: "#fff" },
++      ],
++    });
++
++    const file = await saver.saveArticle(item, undefined, undefined, "BODY");
++    expect(file).toBeInstanceOf(TFile);
++    if (!(file instanceof TFile)) throw new Error("expected TFile");
++    const written = await app.vault.read(file);
++    const frontmatter = written.split("---", 3)[1];
++
++    expect(frontmatter).toContain(`title: ${JSON.stringify(item.title)}`);
++    expect(frontmatter).toContain(`source_url: ${JSON.stringify(item.link)}`);
++    expect(frontmatter).toContain(`feed: ${JSON.stringify(item.feedTitle)}`);
++    expect(frontmatter).toContain(`author: ${JSON.stringify(item.author)}`);
++    expect(frontmatter).toContain(
++      'tags: ["yt2b","intake/saved","source/rss","{{title}} danger\\n- injected"]',
++    );
++    expect(frontmatter).not.toContain("\nstatus: approved\n");
++    expect(frontmatter).not.toContain("\nrights: own\n");
++    expect(frontmatter).not.toContain("\ntags: [trusted]\n");
++  });
++
++  it("refuses to overwrite an existing file at the same path", async () => {
+     const app = App.createMock();
+     const settings = createSettings({
+       defaultFolder: "Articles",
+@@ -145,15 +196,28 @@ describe("ArticleSaver.saveArticle", () => {
+     });
+     const saver = new ArticleSaver(app, settings);
+ 
+-    const item = createItem({ title: "Repeat Title" });
+-    await saver.saveArticle(item, undefined, undefined, "FIRST");
++    const original = createItem({ title: "Repeat Title" });
++    const first = await saver.saveArticle(original, undefined, undefined, "FIRST");
++    expect(first).toBeInstanceOf(TFile);
+ 
+     const trashSpy = vi.spyOn(app.fileManager, "trashFile");
+-    await saver.saveArticle(item, undefined, undefined, "SECOND");
++    const colliding = createItem({
++      title: "Repeat Title",
++      guid: "different-guid",
++      link: "https://example.com/different-article",
++    });
++    const result = await saver.saveArticle(
++      colliding,
++      undefined,
++      undefined,
++      "SECOND",
++    );
+ 
+-    expect(trashSpy).toHaveBeenCalledTimes(1);
+-    const trashed = trashSpy.mock.calls[0][0];
+-    expect(trashed).toBeInstanceOf(TFile);
++    expect(result).toBeNull();
++    expect(trashSpy).not.toHaveBeenCalled();
++    expect(colliding.saved).not.toBe(true);
++    if (!(first instanceof TFile)) throw new Error("expected TFile");
++    expect(await app.vault.read(first)).toBe("FIRST");
+   });
+ 
+   it("returns null and does not mark the item saved when writing fails", async () => {
+@@ -173,7 +237,7 @@ describe("ArticleSaver.saveArticle", () => {
+     expect(item.savedFilePath).toBeUndefined();
+   });
+ 
+-  it("continues saving when replacing an existing file hits a missing-path race", async () => {
++  it("fails closed when the same article is saved twice", async () => {
+     const app = App.createMock();
+     const settings = createSettings({
+       defaultFolder: "Articles",
+@@ -184,10 +248,6 @@ describe("ArticleSaver.saveArticle", () => {
+     const item = createItem({ title: "Race Condition" });
+     await saver.saveArticle(item, undefined, undefined, "FIRST");
+ 
+-    vi.spyOn(app.fileManager, "trashFile").mockRejectedValueOnce(
+-      new Error("ENONET: no such file exists"),
+-    );
+-
+     const result = await saver.saveArticle(
+       item,
+       undefined,
+@@ -195,7 +255,13 @@ describe("ArticleSaver.saveArticle", () => {
+       "SECOND",
+     );
+ 
+-    expect(result).toBeInstanceOf(TFile);
++    expect(result).toBeNull();
++    const preserved = app.vault.getAbstractFileByPath(
++      "Articles/Race Condition.md",
++    );
++    expect(preserved).toBeInstanceOf(TFile);
++    if (!(preserved instanceof TFile)) throw new Error("expected TFile");
++    expect(await app.vault.read(preserved)).toBe("FIRST");
+   });
+ 
+   it("creates nested folders one segment at a time", async () => {

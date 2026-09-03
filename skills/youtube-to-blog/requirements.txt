@@ -1,0 +1,10 @@
+# Optional Python dependencies for the youtube-to-blog skill.
+# Every script runs on the standard library; these improve fidelity when installed.
+#
+# pyyaml>=6.0      # richer frontmatter parsing (a flat parser is built in)
+# pillow>=10.0     # hero cropping and thumbnail resizing (hires_frames.py)
+#
+# System tools, not pip packages: yt-dlp, ffmpeg, ffprobe.
+# The claude-blog delivery scripts need patchright or playwright with a Chromium
+# under ~/.cache/ms-playwright; video-analyzer has its own requirements.txt.
+# Run scripts/doctor.py to see what is missing.

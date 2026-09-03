@@ -1,0 +1,188 @@
+{
+  "schema": "yt2b-plugin-lock/v1",
+  "generated_at": "2026-09-03",
+  "note": "Pinned versions for everything this vault depends on. Obsidian plugin files are installed per machine under .obsidian/plugins (gitignored); hashes are SHA-256 of the release assets that were installed here.",
+  "obsidian_plugins": [
+    {
+      "id": "agent-client",
+      "name": "Agent Client",
+      "version": "0.12.1",
+      "author": "RAIT-09",
+      "license": "Apache-2.0",
+      "source": "https://github.com/RAIT-09/obsidian-agent-client",
+      "release": "https://github.com/RAIT-09/obsidian-agent-client/releases/tag/0.12.1",
+      "required": true,
+      "files": {
+        "manifest.json": "c14457696d0ef181b5df43373818db92ab792adde5cc0582ec8d1317b1fe6f58",
+        "main.js": "8e9d2c84f061d62a313df0651f278d8c37a558e0557a3dc5f54e4abb85abea2a",
+        "styles.css": "bb36ba8e019dee399edab6adc390dcb32ea38b32bd83cc51c070d206109416f8"
+      },
+      "note": "Checked against the GitHub releases on 2026-09-03: 0.12.1 (2026-08-14) is the latest release, so the copied files were kept."
+    },
+    {
+      "id": "writers-alembic",
+      "name": "Writers Alembic",
+      "version": "1.2.3",
+      "author": "Scott E. Detweiler",
+      "license": "MIT",
+      "source": "https://github.com/sedetweiler/obsidian-alembic",
+      "release": "https://github.com/sedetweiler/obsidian-alembic/releases/tag/1.2.3",
+      "required": true,
+      "files": {
+        "manifest.json": "b7a7829b3bab4ae0445d1eb9ca482189e2ce545699b5e597de3956beaca6d63f",
+        "main.js": "defa58d7db64168f3a6040b73844edf7b1abc0f6573b78b3fdb166dc670bf455",
+        "styles.css": "b726e57da0fc5df9ddbbca43cd27d67bb51c0fbc9b5c4d547ba778140813a872"
+      }
+    },
+    {
+      "id": "writing-studio",
+      "name": "Writing Studio",
+      "version": "3.1.0",
+      "author": "Don Pucik",
+      "license": "MIT",
+      "source": "https://github.com/writerp-777/obsidian-writing-studio",
+      "release": "https://github.com/writerp-777/obsidian-writing-studio/releases/tag/3.1.0",
+      "required": true,
+      "note": "Installed with plugins/writing-studio-no-startup-restore.patch so a workspace-restored launcher does not activate Writing Studio while Open on startup is disabled. The same patch adds a visible return to YouTube to blog in the Launcher and Binder. Deliberate launcher commands still activate it.",
+      "patch": {
+        "path": "plugins/writing-studio-no-startup-restore.patch",
+        "sha256": "a2050bb5ed9c753137ef908655f05ecf3f13dc9c800fbd8e0d30af949b77e090"
+      },
+      "files": {
+        "manifest.json": "36c16c222504320b29e23d1e2e137f3c401ad684ff28c4f1a3449811b597218a",
+        "main.js": "c765b61c7f5872411e380f5f2a50eb43ecccb5a3e41f9d4ef35b966816c452d4",
+        "styles.css": "ddcf73b75cfa2c373dcb27cd8d85341c56ce99b5710d3679dedcf81783636f7e"
+      }
+    },
+    {
+      "id": "obsidian-image-layouts",
+      "name": "Image Layouts",
+      "version": "0.18.0",
+      "author": "Luke Chadwick",
+      "license": "MIT",
+      "source": "https://github.com/vertis/obsidian-image-layouts",
+      "release": "https://github.com/vertis/obsidian-image-layouts/releases/tag/0.18.0",
+      "required": true,
+      "files": {
+        "manifest.json": "a4ed371b6162bb3a41ef341e4bb0e17a6962720521ce56e5d319e8db38ef8eaf",
+        "main.js": "4a7da747b3f68a97096747725a625f90fe1e2cb95a01c090771b97ac55bfe06c",
+        "styles.css": "29316f87e30a9082e817580a152f182be04d9b2acc9a9e14dac256075e6b4321"
+      }
+    },
+    {
+      "id": "home-tab",
+      "name": "Home tab",
+      "version": "1.2.2",
+      "author": "Renso",
+      "license": "not stated in the manifest; see the upstream repository",
+      "source": "https://github.com/olrenso/obsidian-home-tab",
+      "required": false,
+      "note": "Replaced by youtubetoblog-home on 2026-09-03 and removed from community-plugins.json so that two plugins do not fight over empty tabs. Display only: new tabs open a search page with recent files and bookmarks. Files copied from the AIMH Home vault install (version 1.2.2 per manifest.json); the source URL is the authorUrl from the manifest plus the repository name.",
+      "files": {
+        "manifest.json": "86fdde2ce6f6b79a79a0746beb16694b25a273fc51d32da4a77ba13bab3f360a",
+        "main.js": "231992ba669102b56b006553c4e08dd8d0049aaa5c1d4f6540c288c4a3a5e55b",
+        "styles.css": "6eca2bd2ab31b2405af913ad81fb46414faf3abb74232638c801607f6fd8ee5b"
+      },
+      "replaced_by": "youtubetoblog-home"
+    },
+    {
+      "id": "cmdr",
+      "name": "Commander",
+      "version": "0.5.10",
+      "author": "jsmorabito & phibr0",
+      "license": "MIT",
+      "source": "https://github.com/phibr0/obsidian-commander",
+      "release": "https://github.com/phibr0/obsidian-commander/releases/tag/0.5.10",
+      "required": false,
+      "note": "Replaced by youtubetoblog-home on 2026-09-03 and removed from community-plugins.json. The vault-owned sidebar now carries New chat without an overlapping layout plugin. Files remain installed for reversible rollback.",
+      "replaced_by": "youtubetoblog-home",
+      "files": {
+        "manifest.json": "5c7d70b5ac5da9f4c4eb46714fb9e9c63e7883d96515f9c6b7b8e8aaf39aea0d",
+        "main.js": "91e5b62171a2fcec0269d06189d639b4ddf007049cab91d3b308c4a935342083",
+        "styles.css": "575be469d8818eae1aab1ca3e51c4a7047d6bc23663689d311ac7f0140492036"
+      }
+    },
+    {
+      "id": "youtubetoblog-home",
+      "name": "youtubetoblog Home",
+      "version": "0.5.0",
+      "author": "Daniel Agrici",
+      "license": "MIT",
+      "source": "plugins/youtubetoblog-home",
+      "required": false,
+      "note": "Vault-local plugin, canonical source in plugins/youtubetoblog-home; copied into .obsidian/plugins/youtubetoblog-home. Owns the landing page and default left sidebar, including New chat, two-way saved-source promotion, dedicated app-page navigation and live counts. On first load it provisions the Writing Studio project over 03 Blogs, selects it, and disables overlapping frontmatter and daily-note writes. Hashes are of the source files.",
+      "files": {
+        "manifest.json": "0808d4225304a4e22edf94d2c77e0e9448f8ce000bba91afc6fa86a195ac9fcc",
+        "main.js": "deb9442fcbbe2062fb5c7784e291ea2f8c2922a3fd5265c6ba5bb8e825167eb9",
+        "styles.css": "1223dda1bfd316d444e01acbcef3f2c5d29a4ffd6d263ecf12889936acff25a0"
+      }
+    },
+    {
+      "id": "rss-dashboard",
+      "name": "RSS Dashboard",
+      "version": "2.6.0",
+      "author": "Aditya Amatya",
+      "license": "MIT",
+      "source": "https://github.com/amatya-aditya/obsidian-rss-dashboard",
+      "release": "https://github.com/amatya-aditya/obsidian-rss-dashboard/releases/tag/2.6.0",
+      "upstream_commit": "4eb8ee72e690d44b4551073923ce33c4c896d365",
+      "required": false,
+      "note": "Discovery, reader and selective saved-source surface only. Built locally from the pinned upstream tag with plugins/rss-dashboard-safe-save.patch, which refuses same-title collisions and YAML-quotes untrusted saved-note metadata. Do not replace it with an unpatched community build. Vault Shards v2 data and metadata are stored in 01 Queue/RSS Dashboard Data.",
+      "patch": {
+        "path": "plugins/rss-dashboard-safe-save.patch",
+        "sha256": "e835a732d84f6a21cbe9d2c2997d2212db60761f28361d1e12bd1542b03a70da"
+      },
+      "files": {
+        "manifest.json": "a8f56b1f144f16cc6bea8267b139881bf5adf4a3cd24d304f4dba9760a33ade9",
+        "main.js": "c640ce4b9eaa76a707caf01f7b2d26ef94db7237e25a4e10de1cc67659c0dbce",
+        "styles.css": "0ea9a2e26f7d21cac1eb571b46104523dc2445d9141fd056985c9118cd2369df"
+      }
+    }
+  ],
+  "acp_adapters": [
+    {
+      "id": "claude-agent-acp",
+      "package": "@agentclientprotocol/claude-agent-acp",
+      "version": "0.73.0",
+      "source": "https://www.npmjs.com/package/@agentclientprotocol/claude-agent-acp",
+      "install": "npm i -g @agentclientprotocol/claude-agent-acp@0.73.0",
+      "note": "Updated from 0.70.0 on 2026-09-03 (npm latest). Under a Flatpak Obsidian, point Agent Client at a wrapper script that execs node with the adapter's dist/index.js; the plugin resolves a bare command name through a login shell, so ~/.local/bin/claude-agent-acp is found when it is on the login PATH."
+    }
+  ],
+  "claude_code_plugins": [
+    {
+      "id": "claude-blog",
+      "version": "2.1.0",
+      "license": "MIT",
+      "required": true,
+      "source": "https://github.com/AI-Marketing-Hub/claude-blog",
+      "provides": [
+        "~/.claude/scripts/blog_render.py",
+        "~/.claude/scripts/blog_preflight.py",
+        "~/.claude/scripts/generate_hero.py",
+        "~/.claude/scripts/analyze_blog.py",
+        "~/.claude/scripts/load_untrusted_root.py",
+        "agents blog-researcher, blog-writer, blog-seo, blog-reviewer"
+      ]
+    },
+    {
+      "id": "video-analyzer",
+      "plugin_name": "analyze",
+      "version": "1.0.0",
+      "commit": "151e8782c564093c3aa7339e2adc744aab25001b",
+      "license": "Source-Available (Non-Commercial)",
+      "required": true,
+      "source": "https://github.com/docusphere/video-analyzer",
+      "note": "Only read .avt output and keep it untouched with attribution; the format and trademark belong to its author."
+    },
+    {
+      "id": "banana-claude",
+      "version": "3.0.0",
+      "license": "MIT",
+      "required": false,
+      "source": "https://github.com/AgriciDaniel/banana-claude",
+      "marketplace": "banana-claude-marketplace",
+      "note": "Optional paid image generation; the Gemini key is supplied only as the plugin's sensitive user config google_ai_api_key."
+    }
+  ]
+}

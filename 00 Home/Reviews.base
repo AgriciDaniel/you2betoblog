@@ -1,0 +1,89 @@
+filters:
+  and:
+    - '!file.inFolder("_templates")'
+properties:
+  file.name:
+    displayName: Note
+  note.kind:
+    displayName: Kind
+  note.status:
+    displayName: Status
+  note.requested:
+    displayName: Requested
+  note.expires:
+    displayName: Expires
+  note.score:
+    displayName: Score
+  note.blocking:
+    displayName: Blocking
+  note.overlap_ratio:
+    displayName: Overlap
+  note.links_ok:
+    displayName: Links OK
+  note.created:
+    displayName: Created
+views:
+  - type: table
+    name: Home approvals
+    filters:
+      and:
+        - type == "yt2b-approval"
+        - file.inFolder("04 Approvals")
+        - status == "requested"
+    order:
+      - file.name
+      - status
+      - kind
+      - requested
+    sort:
+      - property: requested
+        direction: DESC
+  - type: table
+    name: Home evaluations
+    filters:
+      and:
+        - type == "yt2b-evaluation"
+        - file.inFolder("05 Evaluations")
+    order:
+      - file.name
+      - score
+      - blocking
+      - links_ok
+    sort:
+      - property: created
+        direction: DESC
+      - property: file.name
+        direction: DESC
+  - type: table
+    name: Approvals
+    filters:
+      and:
+        - type == "yt2b-approval"
+        - file.inFolder("04 Approvals")
+    order:
+      - file.name
+      - kind
+      - status
+      - requested
+      - expires
+    sort:
+      - property: requested
+        direction: DESC
+  - type: table
+    name: Evaluations
+    filters:
+      and:
+        - type == "yt2b-evaluation"
+        - file.inFolder("05 Evaluations")
+    order:
+      - file.name
+      - score
+      - blocking
+      - overlap_ratio
+      - links_ok
+      - created
+    sort:
+      - property: created
+        direction: DESC
+      - property: file.name
+        direction: DESC

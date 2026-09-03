@@ -1,0 +1,115 @@
+diff --git a/main.js b/main.js
+--- a/main.js
++++ b/main.js
+@@ -13053,6 +13053,12 @@
+     container.empty();
+     container.addClass("ws-binder-container");
+     this.controlStrip = new ControlStrip(this.plugin, container);
++    const yt2bBack = container.createEl("button", { cls: "ws-yt2b-back", text: "Back to YouTube to blog" });
++    (0, import_obsidian14.setIcon)(yt2bBack.createSpan("ws-yt2b-back-icon"), "arrow-left");
++    yt2bBack.onclick = () => {
++      var _a2, _b2;
++      (_b2 = (_a2 = this.app.commands) == null ? void 0 : _a2.executeCommandById) == null ? void 0 : _b2.call(_a2, "youtubetoblog-home:open-sidebar");
++    };
+     const header = container.createDiv("ws-binder-header");
+     const projectRow = header.createDiv("ws-binder-project-row");
+     const selWrap = projectRow.createDiv("ws-binder-project-sel-wrap");
+@@ -13070,12 +13076,15 @@
+     };
+     const selCaret = selWrap.createSpan("ws-binder-project-caret");
+     (0, import_obsidian14.setIcon)(selCaret, "chevrons-up-down");
+-    const newProjectBtn = projectRow.createEl("button", { cls: "ws-binder-btn", title: t2("binder.newProject") });
+-    (0, import_obsidian14.setIcon)(newProjectBtn, "plus");
+-    newProjectBtn.onclick = () => {
+-      new ProjectModal(this.app, this.plugin).open();
+-    };
+-    if (this.activeProject) {
++    const managedYt2bProject = ((_a2 = this.activeProject) == null ? void 0 : _a2.id) === "yt2b-blog-project";
++    if (!managedYt2bProject) {
++      const newProjectBtn = projectRow.createEl("button", { cls: "ws-binder-btn", title: t2("binder.newProject") });
++      (0, import_obsidian14.setIcon)(newProjectBtn, "plus");
++      newProjectBtn.onclick = () => {
++        new ProjectModal(this.app, this.plugin).open();
++      };
++    }
++    if (this.activeProject && !managedYt2bProject) {
+       const project = this.activeProject;
+       const editProjectBtn = projectRow.createEl("button", { cls: "ws-binder-btn", title: t2("projectModal.editTitle") });
+       (0, import_obsidian14.setIcon)(editProjectBtn, "pencil");
+@@ -15895,7 +15904,9 @@
+     return "feather";
+   }
+   async onOpen() {
+-    this.plugin.activateStudio();
++    if (this.plugin.settings.openOnStartup) {
++      this.plugin.activateStudio();
++    }
+     this.registerEvent(this.plugin.projectManager.onActiveProjectChanged(() => {
+       void this.refresh();
+     }));
+@@ -15954,6 +15965,12 @@
+     this.todayVals = [];
+     this.renderedSprintActive = this.plugin.sprintTimer.isActive();
+     root.addClass("ws-launcher");
++    const yt2bBack = root.createEl("button", { cls: "ws-yt2b-back", text: "Back to YouTube to blog" });
++    (0, import_obsidian18.setIcon)(yt2bBack.createSpan("ws-yt2b-back-icon"), "arrow-left");
++    yt2bBack.onclick = () => {
++      var _a2, _b2;
++      (_b2 = (_a2 = this.app.commands) == null ? void 0 : _a2.executeCommandById) == null ? void 0 : _b2.call(_a2, "youtubetoblog-home:open-sidebar");
++    };
+     this.renderHeader(root);
+     await this.renderProjectCard(root);
+     this.renderModeSelector(root);
+@@ -16007,12 +16024,15 @@
+     };
+     const selCaret = selWrap.createSpan("ws-binder-project-caret");
+     (0, import_obsidian18.setIcon)(selCaret, "chevrons-up-down");
+-    const newProjectBtn = projectRow.createEl("button", { cls: "ws-binder-btn", title: t2("binder.newProject") });
+-    (0, import_obsidian18.setIcon)(newProjectBtn, "plus");
+-    newProjectBtn.onclick = () => {
+-      new ProjectModal(this.app, this.plugin).open();
+-    };
+-    if (project) {
++    const managedYt2bProject = (project == null ? void 0 : project.id) === "yt2b-blog-project";
++    if (!managedYt2bProject) {
++      const newProjectBtn = projectRow.createEl("button", { cls: "ws-binder-btn", title: t2("binder.newProject") });
++      (0, import_obsidian18.setIcon)(newProjectBtn, "plus");
++      newProjectBtn.onclick = () => {
++        new ProjectModal(this.app, this.plugin).open();
++      };
++    }
++    if (project && !managedYt2bProject) {
+       const editProjectBtn = projectRow.createEl("button", { cls: "ws-binder-btn", title: t2("projectModal.editTitle") });
+       (0, import_obsidian18.setIcon)(editProjectBtn, "pencil");
+       editProjectBtn.onclick = () => {
+diff --git a/styles.css b/styles.css
+--- a/styles.css
++++ b/styles.css
+@@ -2158,3 +2158,27 @@
+   color: var(--text-normal);
+   background: var(--background-secondary);
+ }
++.ws-yt2b-back {
++  width: calc(100% - 24px);
++  min-height: 34px;
++  margin: 8px 12px 4px;
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  gap: 7px;
++  border: 1px solid var(--background-modifier-border);
++  border-radius: 8px;
++  background: var(--background-secondary);
++  color: var(--text-normal);
++  box-shadow: none;
++}
++
++.ws-yt2b-back:hover {
++  background: var(--background-modifier-hover);
++}
++
++.ws-yt2b-back-icon,
++.ws-yt2b-back-icon svg {
++  width: 16px;
++  height: 16px;
++}

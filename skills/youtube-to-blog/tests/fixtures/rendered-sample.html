@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0d9488" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#18181b" media="(prefers-color-scheme: dark)">
+<title>Claude Code hooks: a practical guide from the video</title>
+<meta name="description" content="What Claude Code hooks do, how to wire one, and the two mistakes the video demonstrates.">
+<link rel="canonical" href="https://example.com/claude-code-hooks-guide/">
+<meta name="author" content="Daniel Agrici">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Claude Code hooks: a practical guide from the video">
+<meta property="og:description" content="What Claude Code hooks do, how to wire one, and the two mistakes the video demonstrates.">
+<meta property="og:url" content="https://example.com/claude-code-hooks-guide/">
+<meta property="og:image" content="https://example.com/claude-code-hooks-guide/hero.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Claude Code hooks: a practical guide from the video">
+<meta property="og:site_name" content="example.com">
+<meta property="article:published_time" content="2026-09-03">
+<meta property="article:author" content="Daniel Agrici">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Claude Code hooks: a practical guide from the video">
+<meta name="twitter:description" content="What Claude Code hooks do, how to wire one, and the two mistakes the video demonstrates.">
+<meta name="twitter:image" content="https://example.com/claude-code-hooks-guide/hero.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Claude Code hooks: a practical guide from the video", "description": "What Claude Code hooks do, how to wire one, and the two mistakes the video demonstrates.", "image": "https://example.com/claude-code-hooks-guide/hero.jpg", "datePublished": "2026-09-03", "dateModified": "2026-09-03", "author": {"@type": "Person", "name": "Daniel Agrici"}, "wordCount": 303, "keywords": "claude-code, hooks", "inLanguage": "en", "mainEntityOfPage": {"@type": "WebPage", "@id": "https://example.com/claude-code-hooks-guide/"}}</script>
+<style>
+:root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#57534e;--soft:#78716c;--accent:#0d9488;--accent-soft:#ccfbf1;--accent-deep:#115e59;--border:#e7e5e4;--code-bg:#f5f5f4;--warn:#b91c1c;--shadow:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.04)}
+@media (prefers-color-scheme:dark){:root{--bg:#18181b;--surface:#27272a;--text:#fafafa;--muted:#a1a1aa;--soft:#71717a;--accent:#2dd4bf;--accent-soft:#134e4a;--accent-deep:#99f6e4;--border:#3f3f46;--code-bg:#1f1f23;--warn:#fca5a5;--shadow:0 1px 3px rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.3)}}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.65;margin:0;font-size:17px;-webkit-font-smoothing:antialiased}
+article{max-width:740px;margin:0 auto;padding:3rem 1.5rem 5rem}
+.kicker{font-family:ui-monospace,"SF Mono",Monaco,monospace;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 .85rem;font-weight:600}
+h1{font-size:clamp(2rem,5vw,2.85rem);line-height:1.12;letter-spacing:-.025em;margin:0 0 1.1rem;font-weight:800}
+.dek{color:var(--muted);font-size:clamp(1.05rem,2.5vw,1.2rem);line-height:1.5;margin:0 0 1.75rem;max-width:60ch}
+.byline{color:var(--soft);font-size:.875rem;font-family:ui-monospace,monospace;margin:0 0 2.5rem}
+.byline strong{color:var(--text);font-weight:600}
+.hero{margin:0 0 2.5rem;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.hero img{display:block;width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover}
+h2{font-size:clamp(1.4rem,3vw,1.75rem);line-height:1.22;letter-spacing:-.015em;margin:3rem 0 1rem;font-weight:700;scroll-margin-top:1rem}
+h3{font-size:1.2rem;margin:2rem 0 .75rem;font-weight:700}
+p{margin:0 0 1.25rem}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:var(--accent-deep)}
+code{font-family:ui-monospace,"SF Mono",Monaco,monospace;font-size:.9em;background:var(--code-bg);border:1px solid var(--border);padding:.1em .4em;border-radius:4px}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1rem;overflow-x:auto;font-size:.875rem}
+pre code{background:none;border:none;padding:0}
+blockquote{border-left:3px solid var(--accent);padding:.4rem 0 .4rem 1.25rem;margin:0 0 1.5rem;color:var(--muted)}
+ul,ol{margin:0 0 1.25rem;padding-left:1.5rem}
+li{margin:.35rem 0}
+strong{font-weight:700;color:var(--text)}
+img{max-width:100%;height:auto}
+.post-footer{margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);font-size:.875rem;color:var(--muted);font-family:ui-monospace,monospace;display:flex;flex-wrap:wrap;gap:.6rem 1.5rem;justify-content:space-between}
+.post-footer a{color:var(--accent);text-decoration:none}
+::selection{background:var(--accent);color:var(--bg)}
+@media print{body{background:#fff;color:#000;font-size:11pt}article{max-width:none;padding:0 1rem}.hero{box-shadow:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<article>
+<header>
+<p class="kicker">Claude-Code</p>
+<h1>Claude Code hooks: a practical guide from the video</h1>
+<p class="dek">What Claude Code hooks do, how to wire one, and the two mistakes the video demonstrates.</p>
+<p class="byline"><strong>By Daniel Agrici</strong> &middot; 2026-09-03 &middot; 1 min read &middot; 303 words</p>
+</header>
+<figure class="hero"><img src="hero.jpg" alt="Claude Code hooks: a practical guide from the video" width="1200" height="630"></figure>
+<p>Hooks let Claude Code run your own commands before or after a tool call. In the video <a href="https://www.youtube.com/watch?v=abc123DEF45">Claude Code Hooks Explained</a>, Daniel Agrici builds one hook from scratch and shows two mistakes that silently disable it. This guide follows the same path in reading order, with a link to the exact moment for each step.</p>
+<blockquote>
+<p><strong>Key Takeaways</strong>
+- A hook is a shell command bound to a tool event; the settings file decides when it runs.
+- Test a hook with a no-op command first (<a href="https://www.youtube.com/watch?v=abc123DEF45&amp;t=134s">02:14</a>).
+- Two common mistakes: a missing executable bit and a matcher that never matches.</p>
+</blockquote>
+<figure class="video-embed">
+  
+  <a href="https://www.youtube.com/watch?v=abc123DEF45"><img src="images/video-thumb.jpg" alt="Watch: Claude Code Hooks Explained" loading="lazy"></a>
+  <figcaption>Video: <a href="https://www.youtube.com/watch?v=abc123DEF45">Claude Code Hooks Explained</a> by <a href="https://www.youtube.com/@danielagrici">Daniel Agrici</a> (YouTube, published 2026-08-30).</figcaption>
+</figure>
+
+<h2 id="what-is-a-hook">What is a Claude Code hook?</h2>
+<p>A hook is a shell command that Claude Code runs when a named event fires, such as a tool call about to start. The video defines it at <a href="https://www.youtube.com/watch?v=abc123DEF45&amp;t=42s">00:42</a>: the command receives the tool input as JSON on stdin and can allow, block, or annotate the call with its exit code.</p>
+<h2 id="wiring-the-first-hook">Wiring the first hook</h2>
+<p>Watch this moment: <a href="https://www.youtube.com/watch?v=abc123DEF45&amp;t=90s">01:30</a>. The hook lives under <code>.claude/hooks/</code> and the settings file names it under a <code>PreToolUse</code> matcher.</p>
+<figure class="yt2b-layout image-layout-a">
+<figure><img src="images/02-settings-before-0130.jpg" alt="Before: settings.json without a hooks block (01:30)"><figcaption>Before: settings.json without a hooks block (01:30)</figcaption></figure>
+<figure><img src="images/03-settings-after-0212.jpg" alt="After: the PreToolUse hook in place (02:12)"><figcaption>After: the PreToolUse hook in place (02:12)</figcaption></figure>
+<figcaption>Before and after adding the hook</figcaption>
+</figure>
+
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Command</th>
+<th>Moment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>chmod +x .claude/hooks/format.sh</code></td>
+<td><a href="https://www.youtube.com/watch?v=abc123DEF45&amp;t=160s">02:40</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Add the matcher to <code>settings.json</code></td>
+<td><a href="https://www.youtube.com/watch?v=abc123DEF45&amp;t=132s">02:12</a></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash">chmod +x .claude/hooks/format.sh
+</code></pre>
+<h2 id="common-mistakes">Common mistakes</h2>
+<p><img alt="The terminal shows the hook exiting with status 126" src="images/04-exit-126-0355.jpg">
+<em>Exit status 126 means the hook file is not executable (<a href="https://www.youtube.com/watch?v=abc123DEF45&amp;t=235s">03:55</a>)</em></p>
+<p>The second mistake is a matcher that never matches. The video shows the fix at <a href="https://www.youtube.com/watch?v=abc123DEF45&amp;t=260s">04:20</a>: match the tool name exactly, not the file pattern.</p>
+<h2>Frequently asked questions</h2>
+<h3>Does a hook run on every tool call?</h3>
+<p>No. A hook runs only for the events and matchers named in the settings file, so a <code>PreToolUse</code> hook with a <code>Bash</code> matcher ignores file edits.</p>
+<footer class="post-footer"><span>Published at <a href="https://example.com">example.com</a></span><span>2026-09-03 &middot; Daniel Agrici</span></footer>
+</article>
+</body>
+</html>

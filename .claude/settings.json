@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 skills/youtube-to-blog/scripts/*)",
+      "Bash(yt-dlp *)",
+      "Bash(ffmpeg *)",
+      "Bash(ffprobe *)",
+      "Bash(python3 $HOME/.claude/scripts/*)"
+    ]
+  }
+}

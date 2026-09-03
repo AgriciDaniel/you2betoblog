@@ -1,0 +1,47 @@
+filters:
+  and:
+    - type == "yt2b-source"
+    - file.inFolder("01 Queue/Discovery")
+properties:
+  file.name:
+    displayName: Source
+  note.title:
+    displayName: Title
+  note.status:
+    displayName: Status
+  note.feed:
+    displayName: Feed
+  note.source_url:
+    displayName: Original
+  note.published:
+    displayName: Published
+  note.queue:
+    displayName: Queue
+views:
+  - type: table
+    name: Home sources
+    order:
+      - title
+      - status
+      - published
+      - queue
+    sort:
+      - property: published
+        direction: DESC
+      - property: file.name
+        direction: DESC
+  - type: table
+    name: Saved sources
+    order:
+      - file.name
+      - title
+      - status
+      - feed
+      - source_url
+      - published
+      - queue
+    sort:
+      - property: published
+        direction: DESC
+      - property: file.name
+        direction: DESC

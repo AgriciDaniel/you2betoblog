@@ -1,0 +1,26 @@
+{
+  "name": "youtube-to-blog",
+  "version": "0.1.0",
+  "description": "Turn a YouTube video into one to three source-grounded blog posts inside an Obsidian vault: queue, fetch, analyze, brief, strategy with approval, write with the video's real frames, review gates and evaluation. Rights per video, companion or expand mode, human publishing.",
+  "author": {
+    "name": "Daniel Agrici",
+    "url": "https://github.com/AgriciDaniel"
+  },
+  "license": "MIT",
+  "keywords": [
+    "youtube",
+    "blog",
+    "obsidian",
+    "video",
+    "transcript",
+    "seo",
+    "content-repurposing"
+  ],
+  "skills": [
+    "skills/youtube-to-blog"
+  ],
+  "agents": [
+    "agents/yt2b-analyst.md",
+    "agents/yt2b-strategist.md"
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "yt2b-settings/v1",
+  "title": "YouTube to Blog settings",
+  "description": "Frontmatter properties of 00 Home/Settings.md. Defaults mirror yt2b_common.DEFAULT_SETTINGS; an empty string falls back to the default.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "author",
+    "site_url",
+    "language",
+    "default_rights",
+    "default_mode",
+    "max_blogs_per_video",
+    "frame_width",
+    "max_frames_own",
+    "max_frames_third_party",
+    "keep_video",
+    "pause_for_outline",
+    "max_video_minutes",
+    "visuals"
+  ],
+  "properties": {
+    "type": {
+      "const": "yt2b-settings"
+    },
+    "author": {
+      "type": "string",
+      "default": "",
+      "description": "Byline for every post and the Person node in the structured data."
+    },
+    "site_url": {
+      "type": "string",
+      "default": "",
+      "pattern": "^(https?://.+)?$",
+      "description": "Site root used for canonical URLs and the author link."
+    },
+    "language": {
+      "type": "string",
+      "default": "en",
+      "pattern": "^[a-z]{2,3}(-[A-Za-z]{2,4})?$",
+      "description": "Caption language and the lang field of every post."
+    },
+    "default_rights": {
+      "type": "string",
+      "enum": [
+        "own",
+        "third-party",
+        "ask"
+      ],
+      "default": "ask",
+      "description": "Rights applied when a request does not set them; ask means the agent asks once per video."
+    },
+    "default_mode": {
+      "type": "string",
+      "enum": [
+        "companion",
+        "expand"
+      ],
+      "default": "companion",
+      "description": "Article mode applied when a request does not set it."
+    },
+    "max_blogs_per_video": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 3,
+      "description": "Maximum angles the strategist may propose per video."
+    },
+    "frame_width": {
+      "type": "integer",
+      "minimum": 320,
+      "default": 1600,
+      "description": "Pixel width of frames extracted for articles."
+    },
+    "max_frames_own": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 8,
+      "description": "Frame cap per article for own videos."
+    },
+    "max_frames_third_party": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 4,
+      "description": "Frame cap per article for third-party videos."
+    },
+    "keep_video": {
+      "type": "boolean",
+      "default": false,
+      "description": "Keep the downloaded video in .cache/video after the run."
+    },
+    "pause_for_outline": {
+      "type": "boolean",
+      "default": true,
+      "description": "Open an outline approval before drafting each article."
+    },
+    "max_video_minutes": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 90,
+      "description": "Longer videos are refused unless --force-long is passed."
+    },
+    "visuals": {
+      "type": "string",
+      "enum": [
+        "frames",
+        "frames+charts",
+        "frames+charts+ai"
+      ],
+      "default": "frames+charts",
+      "description": "Visual ladder: real frames, plus SVG charts when the brief has data points, plus AI images through Banana Claude."
+    }
+  }
+}

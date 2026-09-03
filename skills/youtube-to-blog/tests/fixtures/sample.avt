@@ -1,0 +1,28 @@
+AGENTIC-VT 1.0
+
+[metadata]
+title: Test Video
+channel: Test Channel
+duration: 00:32
+source: https://youtube.com/watch?v=test123
+analyzed: 2026-05-16 14:30:00
+model: gemini-2.5-flash
+frames_extracted: 3
+transcript_source: captions
+
+---
+
+[00:00 - 00:04] [scene:intro]
+VISUAL: Man sitting at desk, ring light behind. Dark room, low-budget setup.
+AUDIO: 'What\'s up guys, today I want to show you something that completely changed how I use Claude Code.'
+FRAME: frames/frame-001.jpg
+
+[00:04 - 00:15] [scene:screen-recording]
+VISUAL: Screen recording of VS Code. Claude Code terminal visible in bottom panel.
+AUDIO: 'So the first thing you need to do is install this package. Let me walk you through it step by step.'
+FRAME: frames/frame-002.jpg
+
+[00:15 - 00:32] [scene:demo]
+VISUAL: Same screen recording. Terminal output scrolling rapidly.
+AUDIO: 'And now you can see it\'s actually working.'
+FRAME: frames/frame-003.jpg

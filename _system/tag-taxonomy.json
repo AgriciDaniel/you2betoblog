@@ -1,0 +1,57 @@
+{
+  "schema": "yt2b-tag-taxonomy/v1",
+  "root": "yt2b",
+  "description": "Operational notes carry the tag yt2b first. Publishable yt2b-blog notes are the exception: their tags field contains public topic taxonomy only, while type, yt2b_status, yt2b_rights and yt2b_mode provide operational filtering. Facet tags are optional and written as <namespace>/<value>, for example stage/briefed or rights/own.",
+  "namespaces": {
+    "stage": {
+      "description": "Where a run or note sits in the pipeline; mirrors the queue and run statuses.",
+      "values": [
+        "queue",
+        "fetched",
+        "analyzed",
+        "briefed",
+        "strategy",
+        "writing",
+        "done",
+        "blocked"
+      ]
+    },
+    "format": {
+      "description": "What kind of artifact a note is.",
+      "values": [
+        "video",
+        "audio",
+        "source",
+        "transcript",
+        "brief",
+        "strategy",
+        "article",
+        "evaluation",
+        "approval"
+      ]
+    },
+    "intake": {
+      "description": "Discovery state before an item becomes a governed pipeline queue note.",
+      "values": [
+        "discovered",
+        "saved"
+      ]
+    },
+    "source": {
+      "description": "Origin channel for discovery and pipeline artifacts.",
+      "values": [
+        "youtube",
+        "rss",
+        "podcast",
+        "web"
+      ]
+    },
+    "rights": {
+      "description": "Who holds the rights to the source video; drives voice, frame caps, hero policy and attribution.",
+      "values": [
+        "own",
+        "third-party"
+      ]
+    }
+  }
+}

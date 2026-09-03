@@ -1,0 +1,30 @@
+{
+  "id": "abcdefghijk",
+  "title": "Test Video: Claude Code setup",
+  "channel": "Test Channel",
+  "channel_id": "UCtestchannel",
+  "channel_url": "https://www.youtube.com/@testchannel",
+  "uploader": "Test Channel",
+  "webpage_url": "https://www.youtube.com/watch?v=abcdefghijk",
+  "upload_date": "20260901",
+  "duration": 32,
+  "description": "A short demo.\n\nChapters\n0:00 Intro\n0:04 Install the package\n0:15 - See it working\n\nLinks: https://example.com",
+  "tags": ["claude", "tutorial"],
+  "categories": ["Education"],
+  "chapters": [
+    {"start_time": 0.0, "end_time": 4.0, "title": "Field intro"},
+    {"start_time": 4.0, "end_time": 15.0, "title": "Field install"},
+    {"start_time": 15.0, "end_time": 32.0, "title": "Field demo"}
+  ],
+  "view_count": 1234,
+  "like_count": 56,
+  "thumbnail": "https://i.ytimg.com/vi/abcdefghijk/maxresdefault.jpg",
+  "thumbnails": [
+    {"url": "https://i.ytimg.com/vi/abcdefghijk/maxresdefault.jpg", "width": 1920, "height": 1080},
+    {"url": "https://i.ytimg.com/vi/abcdefghijk/hqdefault.jpg", "width": 480, "height": 360}
+  ],
+  "license": "Creative Commons Attribution license (reuse allowed)",
+  "language": "en",
+  "subtitles": ["en"],
+  "automatic_captions": ["en", "en-orig"]
+}

@@ -1,0 +1,38 @@
+# Build output and caches
+.cache/
+**/.render/
+__pycache__/
+.pytest_cache/
+
+# Obsidian: plugins are installed per machine (see _system/plugin-lock.json); workspace files are personal
+.obsidian/plugins/
+.obsidian/workspace-mobile.json
+.obsidian/workspace.json
+.directory
+
+# Claude Code: personal overrides
+.claude/settings.local.json
+
+# Personal content: voice, runs, drafts, decisions, scores and chats.
+# Template users who want to version their own material may delete the lines below.
+/BRAND.md
+/VOICE.md
+/01 Queue/*.md
+!/01 Queue/README.md
+!/01 Queue/Queue.md
+/02 Videos/*
+!/02 Videos/Videos.md
+/03 Blogs/*
+!/03 Blogs/Blogs.md
+/04 Approvals/queue/
+/05 Evaluations/*.md
+!/05 Evaluations/pipeline-rubric.md
+!/05 Evaluations/Evaluations.md
+/06 AI Team/02 Sessions/*.md
+!/06 AI Team/02 Sessions/handoff.md
+/06 AI Team/03 Knowledge/04 Voice/Author Profile.md
+
+# Local scratch and unrelated Writing Studio projects
+/Writing Projects/
+/Untitled*
+/待办/

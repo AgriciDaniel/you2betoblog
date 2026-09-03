@@ -1,0 +1,11 @@
+{
+  "baseFontSize": 16,
+  "enabledCssSnippets": [
+    "youtubetoblog"
+  ],
+  "cssTheme": "GitHub Flavored Markdown",
+  "accentColor": "#c9463a",
+  "theme": "obsidian",
+  "showViewHeader": true,
+  "showRibbon": false
+}

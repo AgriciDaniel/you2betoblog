@@ -1,0 +1,12 @@
+{
+  "attachmentFolderPath": "_assets",
+  "useMarkdownLinks": false,
+  "showUnsupportedFiles": false,
+  "alwaysUpdateLinks": true,
+  "promptDelete": true,
+  "strictLineBreaks": false,
+  "propertiesInDocument": "visible",
+  "showLineNumber": false,
+  "readableLineLength": true,
+  "defaultViewMode": "preview"
+}

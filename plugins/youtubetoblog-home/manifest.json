@@ -1,0 +1,10 @@
+{
+  "id": "youtubetoblog-home",
+  "name": "youtubetoblog Home",
+  "version": "0.5.0",
+  "minAppVersion": "1.13.0",
+  "description": "App-like Home and navigation for the youtubetoblog vault: discover sources, queue videos and run the governed pipeline.",
+  "author": "Daniel Agrici",
+  "authorUrl": "https://github.com/agricidaniel",
+  "isDesktopOnly": true
+}

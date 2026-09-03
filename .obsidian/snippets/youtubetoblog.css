@@ -1,0 +1,513 @@
+/* youtubetoblog: YouTube colours and feel for the vault that turns videos into blogs.
+   One muted brick red accent, warm charcoal and cream surfaces, room colours
+   harmonised with red, dashboard cards, sidebar wordmark, chip-shaped buttons.
+   Light scheme first, dark scheme below. No gradients, no glow. */
+
+:root {
+  --yt2b-accent: #C9463A;
+  --yt2b-accent-hover: #B03B31;
+  --yt2b-accent-ink: #FAF7F1;
+  --yt2b-success: #6E8F5E;
+  --yt2b-radius: 12px;
+  --yt2b-radius-lg: 12px;
+  --yt2b-radius-pill: 999px;
+  --yt2b-inset: 14px;
+  --yt2b-folder-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/></svg>');
+  --yt2b-play-glyph: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="5" fill="%23C9463A"/><path d="M9.5 8.2v7.6l6.4-3.8z" fill="%23FAF7F1"/></svg>');
+  --yt2b-font: "Roboto", "YouTube Sans", -apple-system, "Segoe UI", system-ui, sans-serif;
+}
+
+.theme-light {
+  --yt2b-page: #FAF7F1;
+  --yt2b-panel: #F3EEE5;
+  --yt2b-raised: #ECE6DB;
+  --yt2b-raised-hover: #E3DCCF;
+  --yt2b-line: rgba(40, 30, 20, 0.1);
+  --yt2b-line-strong: rgba(40, 30, 20, 0.2);
+  --yt2b-ink: #2A2520;
+  --yt2b-copy: #3F3832;
+  --yt2b-muted: #6F675E;
+  --yt2b-faint: #A39B90;
+  --yt2b-accent-soft: rgba(201, 70, 58, 0.10);
+  --yt2b-accent-soft-hover: rgba(201, 70, 58, 0.16);
+  --yt2b-shadow: 0 1px 2px rgba(40, 30, 20, 0.08);
+  --room-00: #C9463A; --room-01: #C27A3A; --room-02: #8A9484; --room-03: #B8A990; --room-04: #7E2E38; --room-05: #B8737C; --room-06: #7A6E64;
+}
+
+.theme-dark {
+  --yt2b-page: #161412;
+  --yt2b-panel: #1E1B18;
+  --yt2b-raised: #262320;
+  --yt2b-raised-hover: #322E2A;
+  --yt2b-line: rgba(255, 255, 255, 0.08);
+  --yt2b-line-strong: rgba(255, 255, 255, 0.16);
+  --yt2b-ink: #EDE7DC;
+  --yt2b-copy: #D2CBBF;
+  --yt2b-muted: #A79F93;
+  --yt2b-faint: #6E675E;
+  --yt2b-accent-soft: rgba(201, 70, 58, 0.14);
+  --yt2b-accent-soft-hover: rgba(201, 70, 58, 0.18);
+  --yt2b-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --room-00: #D6675C; --room-01: #D19556; --room-02: #A3AD9C; --room-03: #E4D8C2; --room-04: #A8515B; --room-05: #D28E96; --room-06: #A69A8E;
+}
+
+body {
+  --bases-table-border-color: var(--yt2b-line);
+  --bases-embed-border-color: var(--yt2b-line);
+  --bases-table-header-background-hover: var(--yt2b-raised-hover);
+}
+
+/* Chrome: one sidebar surface, a quiet tab bar, a red underline on the active tab. */
+
+.workspace-split.mod-left-split,
+.workspace-split.mod-left-split .workspace-leaf,
+.workspace-split.mod-left-split .workspace-tabs,
+.workspace-split.mod-left-split .view-content,
+.workspace-split.mod-left-split .workspace-tab-header-container {
+  background-color: var(--yt2b-panel);
+}
+
+.workspace-split.mod-left-split {
+  border-right: 1px solid var(--yt2b-line);
+}
+
+.workspace-split.mod-root,
+.workspace-split.mod-root .view-content {
+  background-color: var(--yt2b-page);
+}
+
+.workspace-tab-header-container {
+  background: transparent;
+  border-bottom: 1px solid var(--yt2b-line);
+}
+
+.workspace-tab-header {
+  background: transparent !important;
+  border-radius: 0;
+}
+
+.workspace-tab-header.is-active {
+  box-shadow: inset 0 -2px 0 0 var(--yt2b-accent);
+}
+
+/* Rooms: numbered root folders get a colour, carried by the folder icon only. */
+
+:is(.nav-folder-title, .nav-file-title)[data-path^="00 "] { --room: var(--room-00); }
+:is(.nav-folder-title, .nav-file-title)[data-path^="01 "] { --room: var(--room-01); }
+:is(.nav-folder-title, .nav-file-title)[data-path^="02 "] { --room: var(--room-02); }
+:is(.nav-folder-title, .nav-file-title)[data-path^="03 "] { --room: var(--room-03); }
+:is(.nav-folder-title, .nav-file-title)[data-path^="04 "] { --room: var(--room-04); }
+:is(.nav-folder-title, .nav-file-title)[data-path^="05 "] { --room: var(--room-05); }
+:is(.nav-folder-title, .nav-file-title)[data-path^="06 "] { --room: var(--room-06); }
+
+.nav-folder-title:not(:where([data-path*="/"])) {
+  color: var(--yt2b-faint);
+  font-size: 0.84em;
+  padding: 3px 8px 3px 6px;
+  border-radius: 8px;
+}
+
+.nav-folder-title[data-path^="0"]:not(:where([data-path*="/"])) {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 3px 8px 3px 0;
+  padding: 7px 10px 7px 9px;
+  font-size: 0.94em;
+  font-weight: 500;
+  color: var(--yt2b-ink);
+  border-radius: 10px;
+}
+
+.nav-folder-title[data-path^="0"]:not(:where([data-path*="/"])):hover,
+.nav-folder.has-focus > .nav-folder-title[data-path^="0"]:not(:where([data-path*="/"])) {
+  background-color: var(--yt2b-raised);
+}
+
+.nav-folder-title[data-path^="0"]:not(:where([data-path*="/"]))::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  background-color: var(--room);
+  -webkit-mask: var(--yt2b-folder-mask) center / contain no-repeat;
+  mask: var(--yt2b-folder-mask) center / contain no-repeat;
+}
+
+.nav-file-title.is-active[data-path*="/"] {
+  color: var(--room, var(--yt2b-ink));
+  background-color: color-mix(in srgb, var(--room, var(--yt2b-ink)) 12%, transparent);
+}
+
+/* Dashboard: headings, Bases embeds, command cards, chat card. */
+
+.yt2b-dashboard h2 {
+  margin-top: 2.2em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--yt2b-line);
+  font-family: var(--yt2b-font);
+  font-weight: 650;
+}
+
+.yt2b-dashboard h3 {
+  margin: 1.4em 0 0.4em;
+  color: var(--yt2b-muted);
+  font-size: 0.78em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.yt2b-dashboard .callout {
+  border: 1px solid var(--yt2b-line);
+  border-radius: var(--yt2b-radius);
+  background: var(--yt2b-panel);
+}
+
+.yt2b-dashboard .bases-embed {
+  margin: 0 0 1em;
+  border: 1px solid var(--yt2b-line);
+  border-radius: var(--yt2b-radius);
+}
+
+.yt2b-dashboard .bases-embed table {
+  margin: 0;
+  font-size: 0.9em;
+}
+
+.yt2b-dashboard .callout[data-callout="agent-command"] {
+  container-type: inline-size;
+  margin: 16px 0 24px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: var(--yt2b-shadow);
+}
+
+.yt2b-dashboard .callout[data-callout="agent-command"] > .callout-title {
+  min-height: 48px;
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid var(--yt2b-line);
+  color: var(--yt2b-ink);
+}
+
+.yt2b-dashboard .callout[data-callout="agent-command"] > .callout-title .callout-icon {
+  display: none;
+}
+
+.yt2b-dashboard .callout[data-callout="agent-command"] > .callout-title .callout-title-inner {
+  font: 650 13px/1.2 var(--yt2b-font);
+  letter-spacing: 0.02em;
+}
+
+.yt2b-dashboard .callout[data-callout="agent-command"] > .callout-content {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 14px 18px 18px;
+}
+
+.yt2b-dashboard .callout[data-callout="agent-command"] > .callout-content > p {
+  grid-column: 1 / -1;
+  margin: 0 0 2px;
+  color: var(--yt2b-muted);
+  font: 500 11.5px/1.45 var(--yt2b-font);
+}
+
+.yt2b-dashboard .callout[data-callout="agent-command"] .agent-client-code-block-host,
+.yt2b-dashboard .callout[data-callout="agent-command"] .agent-client-button-block {
+  min-width: 0;
+  margin: 0;
+}
+
+/* Command buttons: secondary chips (tinted red); the first button in a card is
+   the primary action (solid red, white text). Pill shape like YouTube chips. */
+
+.yt2b-dashboard .callout[data-callout="agent-command"] .agent-client-button-block-button {
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: var(--yt2b-radius-pill);
+  background: var(--yt2b-accent-soft);
+  color: var(--yt2b-accent);
+  font: 600 12px/1.2 var(--yt2b-font);
+  text-align: left;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.yt2b-dashboard .callout[data-callout="agent-command"] .agent-client-button-block-button:is(:hover, :focus-visible) {
+  background: var(--yt2b-accent-soft-hover);
+  color: var(--yt2b-accent-hover);
+  outline: none;
+}
+
+.yt2b-dashboard .callout[data-callout="agent-command"] > .callout-content > :is(.agent-client-code-block-host, .agent-client-button-block):first-of-type .agent-client-button-block-button {
+  background: var(--yt2b-accent);
+  color: var(--yt2b-accent-ink);
+}
+
+.yt2b-dashboard .callout[data-callout="agent-command"] > .callout-content > :is(.agent-client-code-block-host, .agent-client-button-block):first-of-type .agent-client-button-block-button:is(:hover, :focus-visible) {
+  background: var(--yt2b-accent-hover);
+  color: var(--yt2b-accent-ink);
+}
+
+@container (max-width: 700px) {
+  .yt2b-dashboard .callout[data-callout="agent-command"] > .callout-content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.yt2b-dashboard .agent-client-chat-block {
+  overflow: hidden;
+  border: 1px solid var(--yt2b-line);
+  border-radius: var(--yt2b-radius-lg);
+  background: var(--yt2b-panel);
+  box-shadow: var(--yt2b-shadow);
+}
+
+/* App pages: a wider working canvas, compact navigation and focused Home data. */
+
+:is(.aimh-dashboard, .yt2b-app-page) .markdown-preview-sizer {
+  width: calc(100% - 48px);
+  max-width: 1120px !important;
+}
+
+:is(.aimh-dashboard, .yt2b-app-page) :is(.inline-title, .metadata-container) {
+  display: none !important;
+}
+
+:is(.aimh-dashboard, .yt2b-app-page) h1 {
+  margin-bottom: 0.25em;
+  color: var(--yt2b-ink);
+  font-family: var(--yt2b-font);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+:is(.aimh-dashboard, .yt2b-app-page) .callout[data-callout="yt2b-nav"] {
+  margin: 18px 0 28px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--yt2b-line);
+  border-radius: var(--yt2b-radius-pill);
+  background: var(--yt2b-panel);
+}
+
+:is(.aimh-dashboard, .yt2b-app-page) .callout[data-callout="yt2b-nav"] > .callout-title {
+  display: none;
+}
+
+:is(.aimh-dashboard, .yt2b-app-page) .callout[data-callout="yt2b-nav"] > .callout-content {
+  padding: 7px 10px;
+}
+
+:is(.aimh-dashboard, .yt2b-app-page) .callout[data-callout="yt2b-nav"] ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:is(.aimh-dashboard, .yt2b-app-page) .callout[data-callout="yt2b-nav"] li {
+  margin: 0;
+}
+
+:is(.aimh-dashboard, .yt2b-app-page) .callout[data-callout="yt2b-nav"] li::before,
+:is(.aimh-dashboard, .yt2b-app-page) .callout[data-callout="yt2b-nav"] li::marker {
+  display: none !important;
+  content: "";
+}
+
+:is(.aimh-dashboard, .yt2b-app-page) .callout[data-callout="yt2b-nav"] .internal-link {
+  display: block;
+  padding: 7px 11px;
+  border-radius: var(--yt2b-radius-pill);
+  color: var(--yt2b-muted);
+  font: 600 12px/1 var(--yt2b-font);
+  text-decoration: none;
+}
+
+:is(.aimh-dashboard, .yt2b-app-page) .callout[data-callout="yt2b-nav"] .internal-link:hover {
+  background: var(--yt2b-raised);
+  color: var(--yt2b-accent);
+}
+
+.aimh-dashboard .bases-embed .bases-header {
+  display: none;
+}
+
+.aimh-dashboard .bases-embed {
+  overflow: auto;
+  box-shadow: var(--yt2b-shadow);
+}
+
+/* Home Help is an accordion. The label owns the row and the fold icon sits on
+   a fixed trailing edge, so every closed panel aligns regardless of title. */
+
+.aimh-dashboard .callout[data-callout="info"] {
+  margin: 10px 0;
+  padding: 0;
+  overflow: hidden;
+  border-color: var(--yt2b-line);
+  background: var(--yt2b-panel);
+  box-shadow: none;
+}
+
+.aimh-dashboard .callout[data-callout="info"] > .callout-title {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 54px;
+  padding: 0 18px;
+  color: var(--yt2b-ink);
+}
+
+.aimh-dashboard .callout[data-callout="info"] > .callout-title .callout-icon {
+  display: none;
+}
+
+.aimh-dashboard .callout[data-callout="info"] > .callout-title .callout-title-inner {
+  flex: 1 1 auto;
+  min-width: 0;
+  font: 550 14px/1.25 var(--yt2b-font);
+}
+
+.aimh-dashboard .callout[data-callout="info"] > .callout-title .callout-fold {
+  flex: 0 0 20px;
+  width: 20px;
+  margin-left: auto;
+  color: var(--yt2b-muted);
+}
+
+.aimh-dashboard .callout[data-callout="info"] > .callout-content {
+  padding: 0 18px 18px;
+  color: var(--yt2b-copy);
+}
+
+.yt2b-app-page .bases-embed {
+  overflow: auto;
+  margin: 0 0 24px;
+  border: 1px solid var(--yt2b-line);
+  border-radius: var(--yt2b-radius);
+  box-shadow: var(--yt2b-shadow);
+}
+
+@media (max-width: 700px) {
+  :is(.aimh-dashboard, .yt2b-app-page) .markdown-preview-sizer {
+    width: calc(100% - 24px);
+  }
+
+  :is(.aimh-dashboard, .yt2b-app-page) .callout[data-callout="yt2b-nav"] {
+    border-radius: var(--yt2b-radius);
+  }
+}
+
+/* Sidebar header, top to bottom: wordmark row, now a real Commander button
+   (youtubetoblog-home:open-home) instead of a static ::before, so clicking it
+   opens the you2toblog dashboard; then the Commander "New chat" pill
+   (agent-client:open-new-chat-view); both are injected inside
+   .nav-buttons-container and pulled to their own full-width rows by flex
+   order; then the explorer action buttons (New note only, see below), then
+   the tree. */
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-header {
+  display: flex; flex-direction: column; align-items: stretch;
+  height: auto; gap: 8px;
+  padding: 14px var(--yt2b-inset) 8px;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-buttons-container {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
+  width: 100%; margin: 0; padding: 0;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-buttons-container .nav-action-button {
+  order: 1;
+  width: 26px; height: 26px; margin: 0; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0.75;
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-buttons-container .nav-action-button:hover {
+  opacity: 1;
+}
+
+.nav-buttons-container .cmdr[data-cmdr*="YouTube to blog"] {
+  flex: 1 0 100%; order: -2;
+  display: flex; align-items: center; justify-content: flex-start; gap: 0;
+  width: 100%; height: auto;
+  min-height: 22px; margin: 0; padding: 0 0 0 30px;
+  background: var(--yt2b-play-glyph) left center / 22px 22px no-repeat;
+  border: none; box-shadow: none; cursor: pointer;
+  color: var(--yt2b-accent);
+}
+
+.nav-buttons-container .cmdr[data-cmdr*="YouTube to blog"]:hover { color: var(--yt2b-accent-hover); }
+
+.nav-buttons-container .cmdr[data-cmdr*="YouTube to blog"] svg { display: none; }
+
+.nav-buttons-container .cmdr[data-cmdr*="YouTube to blog"]::after {
+  content: "YouTube to blog";
+  font: 700 0.82rem/22px var(--yt2b-font);
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+
+.nav-buttons-container .cmdr[data-cmdr*="New chat"] {
+  flex: 1 0 100%; order: -1;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  width: auto; height: auto;
+  margin: 0 0 6px; padding: 9px 14px;
+  color: var(--yt2b-accent);
+  background-color: color-mix(in srgb, var(--yt2b-accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--yt2b-accent) 40%, transparent);
+  border-radius: var(--yt2b-radius-pill);
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.nav-buttons-container .cmdr[data-cmdr*="New chat"]:hover {
+  background-color: color-mix(in srgb, var(--yt2b-accent) 18%, transparent);
+  border-color: color-mix(in srgb, var(--yt2b-accent) 60%, transparent);
+  color: var(--yt2b-accent-hover);
+}
+
+.nav-buttons-container .cmdr[data-cmdr*="New chat"] svg { width: 16px; height: 16px; color: var(--yt2b-accent); }
+
+.nav-buttons-container .cmdr[data-cmdr*="New chat"]::after { content: "New chat"; font: 600 0.88rem/1.2 var(--yt2b-font); }
+
+/* Explorer action row: keep New note and Collapse all, drop New folder,
+   Change sort order and Reveal active file per Daniel's request. */
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-buttons-container
+  .nav-action-button:not([aria-label="New note" i]):not([aria-label="Collapse all" i]) {
+  display: none;
+}
+
+/* Utility row: Files, Search, Bookmarks, Writing studio, Writing log,
+   Canvas, Graph view and YouTube home, added as Commander buttons so they
+   sit with New note and Collapse all below New chat instead of in the
+   native tab strip at the very top (that strip's own icons are hidden
+   below; its collapse-sidebar arrow and "+" stay, only the leaf tabs go). */
+
+.nav-buttons-container .cmdr:not([data-cmdr*="New chat"]):not([data-cmdr*="YouTube to blog"]) {
+  order: 1;
+  width: 26px; height: 26px; margin: 0; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--yt2b-muted);
+  opacity: 0.75;
+}
+
+.nav-buttons-container .cmdr:not([data-cmdr*="New chat"]):not([data-cmdr*="YouTube to blog"]):hover {
+  opacity: 1;
+  color: var(--yt2b-accent);
+}
+
+.nav-buttons-container .cmdr:not([data-cmdr*="New chat"]):not([data-cmdr*="YouTube to blog"]) svg {
+  width: 15px; height: 15px;
+}
+
+.mod-left-split .workspace-tab-header-container .workspace-tab-header {
+  display: none;
+}

@@ -1,0 +1,15 @@
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+
+# Preserve third-party and fixture bytes without applying project whitespace rules.
+.obsidian/themes/Prism/theme.css -whitespace
+plugins/*.patch -whitespace
+skills/youtube-to-blog/tests/fixtures/* -whitespace

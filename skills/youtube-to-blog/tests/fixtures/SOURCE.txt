@@ -1,0 +1,16 @@
+Fixture provenance
+
+sample.avt, sample.vtt
+  Origin: video-analyzer by Frank Nillard (docusphere), tests/fixtures/,
+          https://github.com/docusphere/video-analyzer
+          (local checkout: ~/Desktop/Skills/Public/video-analyzer).
+  License: Source-Available License, personal, educational and non-commercial
+           use, attribution required. Copyright (c) 2026 Frank Nillard.
+  Use here: copied unmodified for read-only parser tests. The .avt format and
+           its parser belong to video-analyzer; this repository (MIT) only reads
+           .avt files and never rewrites them.
+
+sample.info.json, rollup.vtt
+  Origin: written for this repository (MIT). sample.info.json mimics the trimmed
+          shape fetch_video.py writes; rollup.vtt mimics the YouTube automatic
+          caption roll-up layout (tagged words plus repeated plain lines).

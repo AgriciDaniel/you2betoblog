@@ -1,0 +1,132 @@
+filters:
+  and:
+    - '!file.inFolder("_templates")'
+properties:
+  file.name:
+    displayName: Note
+  note.title:
+    displayName: Title
+  note.status:
+    displayName: Status
+  note.rights:
+    displayName: Rights
+  note.mode:
+    displayName: Mode
+  note.priority:
+    displayName: Priority
+  note.discovered_via:
+    displayName: Discovered via
+  note.channel:
+    displayName: Channel
+  note.captions:
+    displayName: Captions
+  note.published:
+    displayName: Published
+  note.updated:
+    displayName: Updated
+  note.yt2b_status:
+    displayName: Status
+  note.yt2b_score:
+    displayName: Score
+  note.yt2b_template:
+    displayName: Template
+  note.yt2b_rights:
+    displayName: Rights
+  note.date:
+    displayName: Date
+views:
+  - type: table
+    name: Home queue
+    filters:
+      and:
+        - type == "yt2b-queue"
+        - file.inFolder("01 Queue")
+        - status != "done"
+        - status != "failed"
+    order:
+      - file.name
+      - status
+      - rights
+      - priority
+    sort:
+      - property: updated
+        direction: DESC
+      - property: file.name
+        direction: DESC
+  - type: table
+    name: Home blogs
+    filters:
+      and:
+        - type == "yt2b-blog"
+        - file.inFolder("03 Blogs")
+        - '!file.path.contains("/publish-kit/")'
+        - '!file.path.contains("/.render/")'
+    order:
+      - title
+      - yt2b_status
+      - yt2b_score
+      - date
+    sort:
+      - property: date
+        direction: DESC
+      - property: title
+        direction: ASC
+  - type: table
+    name: Queue
+    filters:
+      and:
+        - type == "yt2b-queue"
+        - file.inFolder("01 Queue")
+    order:
+      - file.name
+      - status
+      - rights
+      - mode
+      - priority
+      - discovered_via
+      - updated
+    sort:
+      - property: updated
+        direction: DESC
+      - property: file.name
+        direction: DESC
+  - type: table
+    name: Videos
+    filters:
+      and:
+        - type == "yt2b-video"
+        - file.inFolder("02 Videos")
+    order:
+      - file.name
+      - title
+      - channel
+      - status
+      - captions
+      - published
+      - updated
+    sort:
+      - property: updated
+        direction: DESC
+      - property: published
+        direction: DESC
+  - type: table
+    name: Blogs
+    filters:
+      and:
+        - type == "yt2b-blog"
+        - file.inFolder("03 Blogs")
+        - '!file.path.contains("/publish-kit/")'
+        - '!file.path.contains("/.render/")'
+    order:
+      - file.name
+      - title
+      - yt2b_status
+      - yt2b_score
+      - yt2b_template
+      - yt2b_rights
+      - date
+    sort:
+      - property: date
+        direction: DESC
+      - property: title
+        direction: ASC

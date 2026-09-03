@@ -1,0 +1,18 @@
+{
+  "name": "agricidaniel-youtube-to-blog",
+  "owner": {
+    "name": "Daniel Agrici"
+  },
+  "metadata": {
+    "description": "YouTube to Blog: an Obsidian vault and Claude Code skill that turn videos into source-grounded blog posts"
+  },
+  "plugins": [
+    {
+      "name": "youtube-to-blog",
+      "source": "./",
+      "description": "Queue, fetch, analyze, brief, strategy, write, review and evaluate blog posts from YouTube videos inside an Obsidian vault. Install it in other projects; inside the vault itself the project skill under .claude/skills is already active, so do not enable both there.",
+      "license": "MIT",
+      "category": "productivity"
+    }
+  ]
+}
