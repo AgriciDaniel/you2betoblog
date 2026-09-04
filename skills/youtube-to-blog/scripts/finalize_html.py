@@ -341,7 +341,7 @@ def readme_text(slug: str, files: list[str], rights: str, page_url: str, chapter
     lines += [
         "",
         "How to use:",
-        f"  1. Upload hero.jpg and the images/ folder next to the post, keeping the relative paths.",
+        "  1. Upload hero.jpg and the images/ folder next to the post, keeping the relative paths.",
         f"  2. Paste {slug}.publish.md (or its rendered HTML) into the CMS. It already contains the",
         "     embed figure and the converted image layouts.",
         "  3. Add layouts.css to the site stylesheet once (it styles .yt2b-layout and .video-embed).",

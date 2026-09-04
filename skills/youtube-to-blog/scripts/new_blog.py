@@ -12,7 +12,7 @@ yt2b_rights, yt2b_mode, yt2b_template) and the Writing Studio fields
 (binder-order as YYYYMMDD plus a two digit sequence, binder-status,
 binder-type and word-count-goal). The body
 is a placeholder until the writer runs. canonical is always written: from
-Settings site_url when set, else a placeholder plus a warning. Registers the
+Settings site_url. Placeholder and empty values are refused before writing. Registers the
 blog in run.md. Prints {blog_dir, md_path, slug, canonical, warnings}.
 Exit 0 ok, 2 invalid input or existing folder without --force.
 """
@@ -25,6 +25,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import yt2b_common as common  # noqa: E402
+import contract  # noqa: E402
 import make_run_note  # noqa: E402
 
 PLACEHOLDER_SITE = "https://example.com/blog"
@@ -111,6 +112,11 @@ def main(argv: list[str] | None = None) -> int:
         return common.fail(common.EXIT_INPUT, f"run folder not found: {run_dir}")
     if not args.title.strip():
         return common.fail(common.EXIT_INPUT, "--title must not be empty")
+    settings = common.load_settings(vault)
+    if not str(settings.get("author") or "").strip():
+        return common.fail(common.EXIT_POLICY, "Settings author is empty; finish setup before creating a blog")
+    if not contract.valid_site_url(settings.get("site_url")):
+        return common.fail(common.EXIT_POLICY, "Settings site_url is empty, local, or a placeholder; set the real site URL before creating a blog")
     try:
         result = create_blog(vault, run_dir, args)
     except FileExistsError as exc:

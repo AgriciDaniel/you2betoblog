@@ -15,6 +15,7 @@ thumbnail: ""
 frames: 0
 blogs: []
 queue: ""
+approvals: []
 created: "{{date}}"
 updated: "{{date}}"
 tags:
@@ -68,6 +69,10 @@ limit: 12
 caption: Frames used in slug
 ---
 ```
+
+## Approvals
+
+- (none yet)
 
 ## Artifacts
 

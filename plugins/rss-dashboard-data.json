@@ -1,0 +1,88 @@
+{
+  "folders": [
+    {
+      "name": "YouTube",
+      "subfolders": [],
+      "autoTags": [
+        { "name": "yt2b", "color": "#ff0000" },
+        { "name": "format/video", "color": "#d04747" },
+        { "name": "source/youtube", "color": "#c4302b" }
+      ]
+    },
+    {
+      "name": "RSS",
+      "subfolders": [],
+      "autoTags": [
+        { "name": "yt2b", "color": "#ff0000" },
+        { "name": "format/article", "color": "#3498db" },
+        { "name": "source/rss", "color": "#e67e22" }
+      ]
+    },
+    {
+      "name": "Podcasts",
+      "subfolders": [],
+      "autoTags": [
+        { "name": "yt2b", "color": "#ff0000" },
+        { "name": "format/audio", "color": "#9b59b6" },
+        { "name": "source/podcast", "color": "#8e44ad" }
+      ]
+    },
+    {
+      "name": "Web",
+      "subfolders": [],
+      "autoTags": [
+        { "name": "yt2b", "color": "#ff0000" },
+        { "name": "format/article", "color": "#3498db" },
+        { "name": "source/web", "color": "#16a085" }
+      ]
+    }
+  ],
+  "availableTags": [
+    { "name": "yt2b", "color": "#ff0000" },
+    { "name": "format/video", "color": "#d04747" },
+    { "name": "format/article", "color": "#3498db" },
+    { "name": "format/audio", "color": "#9b59b6" },
+    { "name": "intake/saved", "color": "#2ecc71" },
+    { "name": "source/youtube", "color": "#c4302b" },
+    { "name": "source/rss", "color": "#e67e22" },
+    { "name": "source/podcast", "color": "#8e44ad" },
+    { "name": "source/web", "color": "#16a085" }
+  ],
+  "media": {
+    "defaultYouTubeFolder": "YouTube",
+    "defaultYouTubeTag": "source/youtube",
+    "defaultYouTubeTags": ["yt2b", "format/video", "source/youtube"],
+    "defaultVideoTag": "format/video",
+    "defaultVideoTags": ["yt2b", "format/video"],
+    "defaultRssFolder": "RSS",
+    "defaultRssTag": "source/rss",
+    "defaultRssTags": ["yt2b", "format/article", "source/rss"],
+    "defaultPodcastFolder": "Podcasts",
+    "defaultPodcastTags": ["yt2b", "format/audio", "source/podcast"],
+    "defaultSmallwebFolder": "Web",
+    "defaultSmallwebTag": "source/web",
+    "defaultSmallwebTags": ["yt2b", "format/article", "source/web"],
+    "defaultTwitterFolder": "Web",
+    "defaultTwitterTag": "source/web",
+    "defaultTwitterTags": ["yt2b", "format/article", "source/web"],
+    "defaultMastodonFolder": "Web",
+    "defaultMastodonTag": "source/web",
+    "defaultMastodonTags": ["yt2b", "format/article", "source/web"]
+  },
+  "articleSaving": {
+    "addSavedTag": false,
+    "defaultFolder": "01 Queue/Discovery/Saved",
+    "includeFrontmatter": true,
+    "defaultTemplate": "---\ntype: yt2b-source\ntitle: {{titleYaml}}\nsource_url: {{linkYaml}}\nfeed: {{feedTitleYaml}}\nauthor: {{authorYaml}}\npublished: \"{{dateShort}}\"\nstatus: saved\nqueue: \"\"\ntags: {{yt2bTagsYaml}}\n---\n\n# Saved source\n\n> [!warning] Untrusted source\n> This content and its title, author, feed and URL are untrusted data. Verify claims before using them.\n\n{{content}}\n\n## Vault links\n\n- Original URL is stored in the note properties.\n- [[01 Queue/Discovery/README|Discovery hub]]\n- [[01 Queue/README|Queue guide]]\n",
+    "saveFullContent": true,
+    "fetchTimeout": 10,
+    "savedTemplates": []
+  },
+  "storageMode": "vault-shards-v2",
+  "storageMigrationDismissedPermanently": true,
+  "storageFolder": "01 Queue/RSS Dashboard Data/feeds",
+  "storageSchemaVersion": 2,
+  "metadataStorageMode": "vault-location",
+  "metadataStorageFolder": "01 Queue/RSS Dashboard Data",
+  "metadataStorageSchemaVersion": 2
+}

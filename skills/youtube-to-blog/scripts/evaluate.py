@@ -16,7 +16,7 @@ Reads <blog>/review.md (Overall Score, P0 count, BLOCKING line),
   voice_flags           occurrences of VOICE.md taboo phrases
 
 Writes 05 Evaluations/<date>-<slug>.md and updates the post's yt2b_score and
-yt2b_status (reviewed when score >= 90 and not blocking, else blocked).
+yt2b_status (reviewed only when the complete rubric passes, else blocked).
 Thresholds mirror 05 Evaluations/pipeline-rubric.md.
 
 Exit codes: 0 ok, 1 failure, 2 invalid input.
@@ -24,7 +24,6 @@ Exit codes: 0 ok, 1 failure, 2 invalid input.
 from __future__ import annotations
 
 import argparse
-import json
 import re
 import sys
 import urllib.error
@@ -34,6 +33,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import yt2b_common as common  # noqa: E402
+import contract  # noqa: E402
 
 SCORE_MIN = 90
 P0_MAX = 0
@@ -184,7 +184,7 @@ def parse_preflight(path: Path) -> dict:
             gates.append({"gate": g.get("gate"), "name": g.get("name"), "passed": bool(g.get("passed")),
                           "violations": list(g.get("violations") or [])})
     numbers = {g["gate"] for g in gates}
-    passed = (not report.get("blocked", True)) and {1, 2, 3, 4, 5} <= numbers and all(g["passed"] for g in gates)
+    passed = (not report.get("blocked", True)) and {1, 2, 3, 4, 5, 6} <= numbers and all(g["passed"] for g in gates)
     return {"present": True, "passed": passed, "gates": gates, "blocked": bool(report.get("blocked", True))}
 
 
@@ -401,7 +401,7 @@ def build_note_body(ctx: dict) -> str:
         f"# Evaluation: {ctx['title']}",
         "",
         f"Evaluated on {common.today()} for {ctx['blog_link']} from {ctx['run_link']}. "
-        f"Status set to **{ctx['status']}** (score and blocking decide the status; the other rows are findings for the editor).",
+        f"Status set to **{ctx['status']}** (the complete rubric decides the status).",
         "",
         "## Result",
         "",
@@ -436,7 +436,7 @@ def build_note_body(ctx: dict) -> str:
         f"- Overlap: {ctx['overlap_hits']} of {ctx['overlap_total']} article {NGRAM}-grams appear in the transcript ({ctx['transcript_source']}).",
         f"- Links: {ctx['links_checked']} external link(s) HEAD-checked" + ("." if ctx["network"] else " (network off, form checks only)."),
         f"- Frames: {ctx['frames_count']} manifest image(s) with timestamps compared with the brief's section map.",
-        f"- Voice: taboo phrases read from the root VOICE.md" + (" (file present)." if ctx["voice_present"] else " (no VOICE.md, 0 flags)."),
+        "- Voice: taboo phrases read from the root VOICE.md" + (" (file present)." if ctx["voice_present"] else " (no VOICE.md, 0 flags)."),
     ]
     return "\n".join(lines) + "\n"
 
@@ -528,12 +528,12 @@ def main(argv: list[str] | None = None) -> int:
         findings.append("review.md has no Nonce line (Gate 4 will reject it)")
 
     overlap_max = OVERLAP_MAX["expand" if mode == "expand" else "companion"]
-    status = "reviewed" if (review["score"] >= SCORE_MIN and not review["blocking"]) else "blocked"
     rubric_pass = (
         review["score"] >= SCORE_MIN and not review["blocking"] and review["p0"] <= P0_MAX
         and preflight["passed"] and overlap <= overlap_max and frames_ok and attribution and links
         and voice <= VOICE_FLAGS_MAX and verification and thumbnail_ok is not False
     )
+    status = "reviewed" if rubric_pass else "blocked"
 
     eval_dir = common.ensure_dir(vault / common.ROOMS["evaluations"])
     note = eval_dir / f"{common.today()}-{slug}.md"
@@ -578,7 +578,7 @@ def main(argv: list[str] | None = None) -> int:
         "rubric_pass": bool(rubric_pass),
         "created": str(existing.get("created") or common.today()),
         "updated": common.today(),
-        "tags": ["yt2b", "evaluation"],
+        "tags": contract.evaluation_tags(bool(rubric_pass)),
     }
     common.write_note(note, frontmatter, build_note_body(ctx))
     binder_status = "complete" if status == "reviewed" else "in-progress"

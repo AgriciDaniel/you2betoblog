@@ -1,8 +1,8 @@
 # Security policy
 
-## Private preview
+## Preview status
 
-This repository is currently private. Do not share its contents, screenshots, clone URLs, or access with anyone who has not been invited by the owner.
+Public-release acceptance is tracked in `docs/ACCEPTANCE.md`. Personal vault content is not part of the distributable project. Review files, screenshots, and Git history before sharing a copy.
 
 ## Report a security issue
 
@@ -26,4 +26,4 @@ The pipeline must not publish, deploy, commit, push, spend money, or change an a
 
 ## Supported release
 
-Only the latest commit on the private repository's default branch is supported during the preview. Third-party versions and source locations are pinned in `_system/plugin-lock.json`.
+The preview has no long-term support guarantee. Report the exact commit and dependency versions when describing an issue. Third-party versions and source locations are pinned in `_system/plugin-lock.json`.

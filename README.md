@@ -1,81 +1,76 @@
-# youtubetoblog
+# you2toblog
 
-Turn a YouTube video into a reviewable blog article, without leaving Obsidian.
+Turn a YouTube video into a reviewable blog article inside Obsidian.
 
-This is a private preview. It combines a calm dashboard, a guided AI team, human approvals, and a tidy vault where every source, draft, decision, and quality check stays connected.
+Collect the source, inspect its transcript and frames, approve an article direction, and finish the draft in Writing Studio. The video, article, approvals, and evaluation stay connected in your vault.
 
-![Home dashboard](docs/images/home-dashboard.png)
+**Preview status:** public-release acceptance is still in progress. See [acceptance and release evidence](docs/ACCEPTANCE.md) before relying on this workflow. The setup guide pins the public claude-blog release. The required video analyzer restricts commercial use. Read the [setup prerequisites](docs/SETUP.md) before installing.
 
-## What it does
+![Home dashboard with video input, rights and writing mode selectors, navigation, and recent runs](docs/images/home-dashboard.png)
 
-Paste a YouTube link and choose whether the video is yours or belongs to someone else. youtubetoblog can then:
+## From video to article
 
-- collect the title, captions, chapters, and useful moments;
-- propose up to three article ideas;
-- pause for your approval before writing;
-- create a draft with timestamped video links and selected frames;
-- check the finished article and record the score;
-- keep publishing as a deliberate human action.
+1. **Add a video.** Paste its YouTube link and record whether it is yours or third-party material.
+2. **Analyze the source.** Collect metadata, captions, timestamped frames, and a content brief.
+3. **Approve the direction.** Review up to three article ideas and select the ones to develop. Outline approval is enabled by default.
+4. **Review the draft.** Inspect the article, attribution, links, images, and recorded quality checks.
+5. **Finish in Writing Studio.** Make your final edits, then export or publish yourself.
 
-The app supports two writing styles. **Companion** creates an article that works beside the video. **Expand** uses the video as one source in a broader article.
+**Process** takes a new video through analysis and strategy, then pauses for approval. **Analyze only** stops after the content brief. Both actions can use paid provider services. Neither publishes an article.
 
-## A simple workflow
+**Companion** creates an article that works beside the video. **Expand** uses the video as one source in a broader article.
 
-1. **Add** a video from Home or the Queue.
-2. **Review** the proposed article direction.
-3. **Create** the approved draft with the AI team.
-4. **Finish** the article in Writing Studio, then publish it yourself.
+## Inspect the source
 
-![Workspace overview](docs/images/workspace-overview.png)
+Run notes keep the analysis and extracted frames together, so you can trace the draft back to the video.
 
-The dedicated Queue page keeps detailed operational data available without crowding Home.
+![Video run showing extracted frames](docs/images/video-analysis-frames.png)
 
-![Queue page](docs/images/queue-page.png)
+## Review the article
 
-## Designed for control
+Drafts can include timestamped video links, creator attribution, selected frames, and charts supported by source data.
 
-- Every strategy and outline can require an approval note.
-- Rights are recorded as `own` or `third-party` for each video.
-- Third-party material receives stricter quotation, frame, and attribution rules.
-- API keys stay outside the vault and outside Git.
-- Personal runs, drafts, approvals, evaluations, voice files, and chat exports are ignored by default.
-- Nothing is published automatically.
+![Example article with source attribution and a timestamped frame](docs/images/example-created-blog.png)
 
-## What is included
+This is a historical example, not an accepted release fixture. The screenshot includes a visible heading-anchor marker; native Markdown rendering remains an acceptance item.
 
-- An Obsidian application shell with Home, Feeds, Discover, Sources, Queue, Videos, Blogs, Approvals, Evaluations, Settings, and Help pages.
-- A vault-local Home plugin that controls the landing page and sidebar.
-- A `youtube-to-blog` skill that runs the pipeline in a fixed, reviewable order.
-- Two focused agents for video analysis and article strategy.
-- Templates, operating guides, quality gates, tests, and a pinned plugin record.
-- Optional RSS discovery and optional AI image generation.
+## See the quality checks
 
-## Private preview setup
+Each delivered article receives an evaluation covering the review score, delivery gates, source overlap, frame placement, attribution, links, and voice checks.
 
-1. Clone the private repository.
-2. Open the folder as a vault in Obsidian Desktop.
-3. Follow the friendly setup guide in [`docs/SETUP.md`](docs/SETUP.md).
-4. Run the setup check before processing a video.
-5. Reload Obsidian after installing the local Home plugin.
+![Historical article evaluation showing a reviewer scorecard and preflight checks](docs/images/evaluation-example.png)
 
-You need Obsidian Desktop, Claude Code, Python 3.11 or newer, `yt-dlp`, `ffmpeg`, and `ffprobe`. Video analysis uses a Gemini key. The current workflow does **not** need a YouTube Data API key.
+The example evaluation predates the current six-gate contract. Its displayed score and clearance are historical results, not proof that the article passes the current checks. A fresh accepted example is still required.
 
-## Current limits
+## Your workspace
 
-- Desktop is the supported Obsidian experience.
-- RSS discovery uses a pinned, safety-patched build supplied as source and patch instructions. The core writing workflow works without RSS.
-- Videos without captions need an optional Whisper provider key, or they cannot be transcribed automatically.
-- Optional AI images can cost money and always require a separate approval.
-- This preview does not yet include a one-click installer.
+The vault includes Home, Feeds, Discover, Sources, Queue, Videos, Blogs, Approvals, Evaluations, Settings, and help in the Home note. A local Obsidian plugin provides the landing page and sidebar. The pipeline skill, two specialist agents, templates, and operating guides live alongside the content.
 
-## Safety and contribution
+- Rights are recorded for each video. Third-party material has tighter quotation, frame, and attribution rules.
+- Strategy approval is required; outline approval is enabled by default. Only an explicitly requested `--auto` run changes those approval pauses.
+- API keys stay outside the vault and Git.
+- Personal runs, drafts, decisions, evaluations, voice files, and chat exports are ignored by default. Check the public file selection before sharing a copy.
+- RSS discovery and AI image generation are optional. Paid images need their own approval.
+- Publishing remains a human action.
 
-Please read [`SECURITY.md`](SECURITY.md) before reporting a security issue. Changes are welcome through a branch and pull request after following [`CONTRIBUTING.md`](CONTRIBUTING.md).
+## Setup
 
-The complete operating manual lives inside the vault at `06 AI Team/03 Knowledge/01 Guidelines/System Manual.md`. Exact versions and source links are recorded in `_system/plugin-lock.json` and [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+Follow [the setup guide](docs/SETUP.md). You need Obsidian Desktop, Claude Code, Node.js with npm, Python 3.11 or newer, `yt-dlp`, `ffmpeg`, and `ffprobe`, plus the external analysis and blog tools.
+
+The guide covers the pinned Obsidian plugin installer, the Claude adapter, provider keys, personal settings, and the setup doctor. Video analysis uses Gemini. Captionless videos need an optional transcription provider. The workflow does not require a YouTube Data API key.
+
+The current setup is desktop-focused. Fresh-machine installation, native Obsidian behavior, and live end-to-end acceptance remain release requirements. Optional features without completed acceptance must be treated as experimental.
+
+## Development and security
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md) for checks and [SECURITY.md](SECURITY.md) for reporting issues. The full operating manual is [inside the vault](06%20AI%20Team/03%20Knowledge/System%20Manual.md).
+
+Exact dependency versions and source links are recorded in `_system/plugin-lock.json` and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## License
 
-MIT, see [`LICENSE`](LICENSE).
+This repository's original code is MIT licensed; see [LICENSE](LICENSE). Dependencies retain their own licenses.
+
+The required [video-analyzer license](https://github.com/docusphere/video-analyzer/blob/151e8782c564093c3aa7339e2adc744aab25001b/LICENSE) permits personal, educational, and non-commercial use. Commercial use requires prior written permission from its copyright holder. This repository's MIT license does not remove that restriction from the analyzer.
 
 YouTube is a trademark of Google LLC. This project is not affiliated with or endorsed by YouTube.

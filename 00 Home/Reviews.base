@@ -67,6 +67,8 @@ views:
       - requested
       - expires
     sort:
+      - property: file.name
+        direction: ASC
       - property: requested
         direction: DESC
   - type: table

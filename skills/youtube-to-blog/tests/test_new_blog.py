@@ -22,7 +22,7 @@ def test_folder_and_frontmatter(vault, run_dir, capsys):
     assert body.strip() == "<!-- draft pending -->"
     assert fm["title"] == "Title here" and fm["description"] == "Desc" and str(fm["date"]) == common.today()
     assert fm["author"] == "Test Author" and fm["slug"] == md.stem and fm["tags"] == [] and fm["lang"] == "en"
-    assert fm["canonical"] == "https://example.org/my-first-post"
+    assert fm["canonical"] == "https://brandsite.dev/my-first-post"
     assert fm["type"] == "yt2b-blog" and fm["yt2b_status"] == "drafting" and fm["yt2b_score"] == 0
     assert fm["binder-status"] == "draft" and fm["binder-type"] == "article"
     assert fm["yt2b_video"].startswith("[[02 Videos/") and fm["yt2b_rights"] == "own" and fm["yt2b_mode"] == "companion"
@@ -50,13 +50,12 @@ def test_refuse_existing_unless_force(vault, run_dir, capsys):
     assert code == 0 and body.strip() == "Draft text." and fm["title"] == "Title here" and str(fm["created"]) == "2020-01-01"
 
 
-def test_placeholder_canonical_warns(vault, run_dir, capsys):
+def test_placeholder_canonical_is_refused_before_write(vault, run_dir, capsys):
     common.update_note(vault / common.SETTINGS_NOTE, {"site_url": ""})
     code, out = make(vault, run_dir, capsys)
-    assert code == 0 and out["canonical"] == "https://example.com/blog/my-first-post"
-    assert any("site_url" in w for w in out["warnings"])
-    fm, _ = common.read_note(out["md_path"])
-    assert fm["canonical"] == "https://example.com/blog/my-first-post"
+    assert code == common.EXIT_POLICY and out["ok"] is False
+    assert "site_url" in out["error"]
+    assert not (vault / "03 Blogs" / f"{common.today()} my-first-post").exists()
 
 
 def test_missing_run_exit_2(vault, capsys):

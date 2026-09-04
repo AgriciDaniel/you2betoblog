@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for helping improve youtubetoblog. During the private preview, use a short-lived branch and open a pull request against `main`.
+Thank you for helping improve youtubetoblog. During the preview, use a short-lived branch and open a pull request against `main`.
 
 ## Before making a change
 

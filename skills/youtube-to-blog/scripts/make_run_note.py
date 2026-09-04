@@ -26,11 +26,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import yt2b_common as common  # noqa: E402
+import contract  # noqa: E402
 
-SECTIONS = ("Video", "Summary", "Key takeaways", "Tags", "Frames", "Blogs", "Artifacts", "Log")
+SECTIONS = ("Video", "Summary", "Key takeaways", "Tags", "Frames", "Blogs", "Approvals", "Artifacts", "Log")
 FIELD_ORDER = ("type", "video_id", "video_url", "title", "channel", "channel_url", "published", "duration_s",
                "rights", "mode", "status", "captions", "thumbnail", "frames", "hero", "blogs", "queue",
-               "created", "updated", "tags")
+               "approvals", "created", "updated", "tags")
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp", ".gif")
 
 
@@ -101,6 +102,19 @@ def artifacts(vault: Path, run_dir: Path, fm: dict) -> str:
         for note in sorted(evals.glob(f"*-{slug}.md")) if evals.is_dir() else []:
             lines.append(f"- Evaluation: {common.wikilink(common.rel(note, vault), note.stem)}")
     return "\n".join(lines) if lines else "- (none yet)"
+
+
+def approvals_section(vault: Path, run_dir: Path) -> tuple[list[str], str]:
+    """Return approval wikilinks and a readable status list for this run."""
+    links: list[str] = []
+    lines: list[str] = []
+    for note, approval_fm, _body in contract.approval_notes(vault, run_dir):
+        link = common.wikilink(common.rel(note, vault), note.stem)
+        links.append(link)
+        kind = str(approval_fm.get("kind") or "approval")
+        status = str(approval_fm.get("status") or "requested")
+        lines.append(f"- {link}: {kind}, {status}")
+    return links, "\n".join(lines) if lines else "- (none yet)"
 
 
 def md_path(path: str) -> str:
@@ -313,11 +327,13 @@ def update_run_note(vault: Path, run_dir: Path, status: str | None = None, sets:
         if link not in blogs:
             blogs.append(link)
         fm["blogs"] = blogs
+    approval_links, approval_text = approvals_section(vault, run_dir)
+    fm["approvals"] = approval_links
     fm.update(media_fields(vault, run_dir, fm))
     fm["updated"] = common.today()
     preamble, sections = common.split_sections(body)
     updates: dict = {"Video": video_section(run_dir, fm), "Frames": frames_section(vault, run_dir, fm["frames"]),
-                     "Blogs": blogs_section(vault, fm)}
+                     "Blogs": blogs_section(vault, fm), "Approvals": approval_text}
     if summary is not None:
         updates["Summary"] = summary
     if takeaways is not None:

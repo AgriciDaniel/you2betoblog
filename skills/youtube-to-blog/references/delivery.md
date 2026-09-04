@@ -19,13 +19,14 @@ SLUG="<slug>"
 
 - `approval.py check` on the strategy note returned `approved` with at least one selected option.
 - `run.md` status is `strategy` or `writing`; `brief/video-brief.json` exists; the cached video exists unless the frames were extracted earlier.
-- Settings `author` and `site_url` are set (the canonical link and the Person node depend on them; Gate 5 fails without a canonical).
+- Settings `author` and `site_url` are set. Run `doctor.py --for-write` before creating the article.
+- The current request's analyze or full provider authorization is recorded by `pipeline.py authorize`.
 
 ## Ordered commands (repeat per approved blog, in approval order)
 
 1. Create the blog folder and note:
    `python3 "$SCRIPTS/new_blog.py" --vault "$VAULT" --run "$RUN" --slug "$SLUG" --title "<working title>" --description "<meta description>" --template <id> --rights <own|third-party> --mode <companion|expand> --word-goal <n>`
-2. Extract the frames (add `--delete-video` on the last approved blog when Settings `keep_video` is false):
+2. Extract the frames. Cache cleanup happens only after the delivery and evaluation pass:
    `python3 "$SCRIPTS/hires_frames.py" --vault "$VAULT" --run "$RUN" --blog "$BLOG"`
 3. Hero: own mode is done by step 2 (`hero.jpg` from the hero moment or the thumbnail). Third-party mode: the Banana Claude flow in `references/banana-images.md` when the plugin is enabled and the user approves the plan, else
    `env -u GOOGLE_AI_API_KEY -u UNSPLASH_ACCESS_KEY -u PEXELS_API_KEY -u PIXABAY_API_KEY python3 "$BLOG_SCRIPTS/generate_hero.py" --topic "<title>" --tags "<tag1,tag2>" --out "$BLOG" --json`
@@ -35,7 +36,7 @@ SLUG="<slug>"
 5. Outline: build it from the template plus the brief's sections. When Settings `pause_for_outline` is true:
    `python3 "$SCRIPTS/approval.py" --vault "$VAULT" create --kind outline --run "$RUN" --blog "$BLOG" --title "Outline: <title>" --request-file "<outline file>" --options "outline=Approve this outline"`
    then stop until `approval.py check` returns `approved`.
-6. Write: dispatch `blog-writer` with the packet from `references/writer-packet.md`.
+6. Run `python3 "$SCRIPTS/pipeline.py" --vault "$VAULT" check-write --run "$RUN" --blog "$BLOG"`, then dispatch `blog-writer` with the packet from `references/writer-packet.md` only when it passes.
 7. SEO: dispatch `blog-seo` with the post path; apply its fixes with Edit.
 8. Render in one command (runs `layout_convert.py`, `blog_render.py` with the hero auto-detected, then `finalize_html.py`; the three underlying commands are listed in "Underlying commands" below):
    `python3 "$SCRIPTS/deliver.py" --vault "$VAULT" --run "$RUN" --blog "$BLOG" render`
@@ -43,8 +44,8 @@ SLUG="<slug>"
    `python3 "$SCRIPTS/deliver.py" --vault "$VAULT" --blog "$BLOG" nonce`
 10. Review: dispatch `blog-reviewer` with the prompt below. The agent has no Write tool: write its returned scorecard to `"$BLOG/review.md"` unchanged.
 11. Gates:
-    `python3 "$SCRIPTS/deliver.py" --vault "$VAULT" --blog "$BLOG" gates`
-    Exit 0 means all five gates passed; the JSON lists `failed_gates` otherwise. Enter the repair loop.
+    `python3 "$SCRIPTS/deliver.py" --vault "$VAULT" --run "$RUN" --blog "$BLOG" gates`
+    Exit 0 means all six gates passed; the JSON lists `failed_gates` otherwise. Enter the repair loop.
 
 Underlying commands (for manual debugging only):
 `python3 "$SCRIPTS/layout_convert.py" --md "$BLOG/$SLUG.md" --out "$BLOG/.render/$SLUG.md"`,
@@ -80,7 +81,7 @@ be the last non-empty line.
 ## Repair loop (at most 3 attempts)
 
 1. Read `preflight-report.json`: the first failed gate and its violations.
-2. Fix by gate: Gate 2 missing artifact, re-run step 8; Gate 3 visual defect, adjust the layout or the SVG and re-run 8; Gate 4 score or P0, re-dispatch `blog-writer` with `review.md` and the instruction to fix the lowest category or the named P0 first, then re-run 7 to 11 (new nonce each time); Gate 5 link or asset, replace or remove the URL and re-run 8 to 11.
+2. Fix by gate: Gate 2 missing artifact, re-run step 8; Gate 3 visual defect, adjust the layout or the SVG and re-run 8; Gate 4 score or P0, re-dispatch `blog-writer` with `review.md` and the instruction to fix the lowest category or the named P0 first, then re-run 7 to 11 (new nonce each time); Gate 5 link or asset, replace or remove the URL and re-run 8 to 11; Gate 6 setup, approval, canonical, slug, embed, dash, word-count or Critical and High issue, correct the named contract violation. Critical findings cannot be waived. A human may use an approved blog-specific editorial note with `accept-high` only when accepting the reviewer risk is deliberate.
 3. Count the attempt: `python3 "$SCRIPTS/deliver.py" --vault "$VAULT" --blog "$BLOG" gates --repair-attempt` (exit 2 means the cap is used; stop and present the diagnostic).
 4. After the third failure, stop: present `preflight-report.json`, `review.md` and the draft, and run the record step with status blocked.
 
@@ -88,12 +89,11 @@ be the last non-empty line.
 
 ```bash
 python3 "$SCRIPTS/evaluate.py" --vault "$VAULT" --run "$RUN" --blog "$BLOG"
-python3 "$SCRIPTS/make_run_note.py" --vault "$VAULT" --run "$RUN" --add-blog "$BLOG" --status <done|blocked> --log "delivered <slug>: score <n>, blocking <true|false>"
-python3 "$SCRIPTS/queue.py" --vault "$VAULT" set "<queue note>" --status <done|failed> --run "$RUN"
+python3 "$SCRIPTS/pipeline.py" --vault "$VAULT" complete --run "$RUN" --blog "$BLOG"
 ```
 
 `evaluate.py` writes `05 Evaluations/<date>-<slug>.md`, sets `yt2b_score` and
-`yt2b_status` (`reviewed` when the score is at least 90 and not blocking,
+`yt2b_status` (`reviewed` only when the complete rubric and all six gates pass,
 otherwise `blocked`) and prints the rubric metrics (`--no-network` skips the
 HEAD checks). Thresholds live in `05 Evaluations/pipeline-rubric.md`.
 

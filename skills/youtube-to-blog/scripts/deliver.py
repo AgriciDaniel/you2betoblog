@@ -21,6 +21,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import yt2b_common as common  # noqa: E402
+import contract  # noqa: E402
 
 HERO_SUFFIXES = (".png", ".jpg", ".jpeg", ".webp")
 
@@ -123,6 +124,7 @@ def cmd_nonce(args) -> int:
 
 
 def cmd_gates(args) -> int:
+    vault = Path(args.vault).resolve()
     blog = Path(args.blog).resolve()
     review = blog / "review.md"
     if review.is_file():
@@ -134,20 +136,37 @@ def cmd_gates(args) -> int:
     sys.stderr.write(p.stderr)
     sys.stderr.write(p.stdout)
     report = common.json_load(blog / "preflight-report.json", default={}) or {}
+    try:
+        explicit_run = Path(args.run).resolve() if args.run else None
+        run_dir = contract.run_for_blog(vault, blog, explicit_run)
+        local_gate = contract.contract_gate(vault, run_dir, blog, report)
+    except (OSError, ValueError) as exc:
+        local_gate = {"gate": 6, "name": "YouTube to Blog Contract", "passed": False,
+                      "violations": [str(exc)], "warnings": []}
+    gates = [g for g in (report.get("gates") or []) if not (isinstance(g, dict) and g.get("gate") == 6)]
+    gates.append(local_gate)
+    report["gates"] = gates
+    upstream = [g for g in gates if isinstance(g, dict) and g.get("gate") != 6]
+    upstream_complete = all(sum(g.get("gate") == n for g in upstream) == 1 for n in range(1, 6))
+    report["blocked"] = (p.returncode != 0 or bool(report.get("blocked", True))
+                         or not upstream_complete or any(g.get("passed") is not True for g in upstream)
+                         or not local_gate["passed"])
+    common.json_dump(blog / "preflight-report.json", report)
     failed = []
     for gate in report.get("gates", []) if isinstance(report.get("gates"), list) else []:
         if isinstance(gate, dict) and not gate.get("passed", True):
             failed.append({"gate": gate.get("gate") or gate.get("name"),
                            "violations": (gate.get("violations") or [])[:8]})
-    common.emit({"ok": p.returncode == 0, "exit_code": p.returncode, "blocked": bool(report.get("blocked", p.returncode != 0)),
+    exit_code = p.returncode if p.returncode != 0 else (1 if report["blocked"] else 0)
+    common.emit({"ok": exit_code == 0, "exit_code": exit_code, "blocked": bool(report.get("blocked", exit_code != 0)),
                  "failed_gates": failed, "report": str(blog / "preflight-report.json")})
-    return p.returncode
+    return exit_code
 
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--vault", default=None)
-    ap.add_argument("--run", default=None, help="run folder (needed by render)")
+    ap.add_argument("--run", default=None, help="run folder (needed by render, optional for gates when the post links it)")
     ap.add_argument("--blog", required=True, help="blog folder")
     sub = ap.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("render")

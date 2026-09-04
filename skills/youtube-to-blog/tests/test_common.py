@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
 import pytest
 
 import yt2b_common as common
@@ -46,7 +44,7 @@ def test_frontmatter_round_trip(tmp_path):
 
 def test_load_settings_and_vault_root(vault):
     settings = common.load_settings(vault)
-    assert settings["author"] == "Test Author" and settings["site_url"] == "https://example.org"
+    assert settings["author"] == "Test Author" and settings["site_url"] == "https://brandsite.dev"
     assert settings["max_video_minutes"] == 90 and settings["keep_video"] is False
     deep = vault / "02 Videos" / "x"
     deep.mkdir(parents=True)

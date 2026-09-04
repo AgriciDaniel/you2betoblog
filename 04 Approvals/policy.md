@@ -3,7 +3,7 @@ type: yt2b-knowledge
 title: Approval policy
 kind: guideline
 created: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-04
 tags:
   - yt2b
   - knowledge
@@ -22,6 +22,7 @@ consequential decision.
 | strategy | after the strategist proposes the angles for a video (always, unless `--auto` picks the recommended angle) | `<date>-<videoId>-strategy.md` |
 | outline | before writing, when Settings `pause_for_outline` is true | `<date>-<videoId>-outline-<blog-slug>.md` |
 | image | before every paid Banana Claude generation (plan and estimate; the outcome is written back) | `<date>-<videoId>-image-<blog-slug>.md` |
+| editorial | only when a human explicitly accepts a remaining Critical or High reviewer finding | `<date>-<videoId>-editorial-<blog-slug>.md` |
 
 ## How to approve
 
@@ -35,6 +36,8 @@ consequential decision.
 A ticked box alone is never approval. Only `status: approved` is. The check
 records the ticked ids in the `selected` property so the Approvals view shows
 the decision.
+
+An editorial waiver also requires the `accept-high` option to be selected. Gate 6 still records the finding. Prefer fixing the article when the claim or evidence is wrong.
 
 ## Expiry
 

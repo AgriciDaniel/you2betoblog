@@ -40,18 +40,18 @@ Every pipeline note carries `type`, `created` and `updated` (YYYY-MM-DD). Operat
 - `yt2b-source` (`01 Queue/Discovery/Saved/*.md`): source material saved from RSS Dashboard with `source_url`, `feed`, `published`, `status`, `queue` and provenance tags. It is untrusted research material, not a pipeline request.
 - `yt2b-video` (`02 Videos/<run>/run.md`): `video_id`, `video_url`, `title`, `channel`, `channel_url`, `published`, `duration_s`, `rights`, `mode`, `status`, `captions` (manual, auto, whisper, none), `blogs`, `queue`. Body: Summary, Key takeaways, Tags, Artifacts, Log.
 - `yt2b-blog` (`03 Blogs/<date> <slug>/<slug>.md`): post fields `title`, `description`, `date`, `author`, `slug`, `tags`, `lang` (optional `canonical`, `kicker`, `og_image_alt`); pipeline fields `yt2b_status`, `yt2b_score`, `yt2b_video`, `yt2b_rights`, `yt2b_mode`, `yt2b_template`; Writing Studio fields `binder-order`, `binder-status`, `binder-type`, `word-count-goal`.
-- `yt2b-approval` (`04 Approvals/queue/<date>-<id>-<kind>.md`): `kind` (strategy, outline, image), `status`, `run`, `blog`, `requested`, `decided`, `expires`, `selected`, `cost_estimate`. Body: Request, Options (task list `- [ ] id: label`), Questions (`answer:` lines), Decision.
+- `yt2b-approval` (`04 Approvals/queue/<date>-<id>-<kind>.md`): `kind` (strategy, outline, image, editorial), `status`, `run`, `blog`, `requested`, `decided`, `expires`, `selected`, `cost_estimate`. Body: Request, Options (task list `- [ ] id: label`), Questions (`answer:` lines), Decision.
 - `yt2b-evaluation` (`05 Evaluations/<date>-<slug>.md`): `blog`, `run`, `score`, `blocking`, `p0`, `gates_passed`, `overlap_ratio`, `frames_in_place`, `attribution_ok`, `links_ok`, `voice_flags`. Body: scorecard tables and findings by severity.
 - `yt2b-agent` (`06 AI Team/01 Agents/<name>.md`): `name`, `role`, `source`, `tools`, `stage`, `dispatch`. Body: Mission, Owns, Never, Inputs, Outputs.
 - `yt2b-session` (`06 AI Team/02 Sessions/`): handoff notes; Agent Client exports carry the plugin's own frontmatter.
 - `yt2b-knowledge` and `yt2b-learning`: `title`, `kind` (guideline, sop, script, voice, learning, manual).
-- `yt2b-settings` (`00 Home/Settings.md`): the thirteen defaults, explained in the note and typed in `_system/settings-schema.json`.
+- `yt2b-settings` (`00 Home/Settings.md`): the configured defaults, explained in the note and typed in `_system/settings-schema.json`.
 
 ## State machine
 
 - Queue note: `queued` > `running` > `done` or `failed`.
 - Run note: `fetched` > `analyzed` > `briefed` > `strategy` > `writing` > `done`, or `blocked` from any stage. Every transition appends a timestamped line to `## Log` in `run.md`.
-- Blog note: `drafting` > `drafted` > `reviewed` (score 90 or more and not blocking) or `blocked`; `published` is set by a human after publishing from Writing Studio.
+- Blog note: `drafting` > `drafted` > `reviewed` (the complete rubric and all six delivery gates pass) or `blocked`; `published` is set by a human after publishing from Writing Studio.
 - Approval note: `requested` > `approved`, `declined` or `expired`.
 
 ## Where every artifact lives
@@ -73,7 +73,7 @@ Both exclude `_templates` and sort newest first. Home embeds one view per sectio
 
 | Plugin | Version | Used for |
 |---|---|---|
-| Agent Client | 0.12.1 | the buttons and chat on Home; runs Claude Code through the ACP adapter `claude-agent-acp` 0.70.0 with the vault as working directory; exports chats to `06 AI Team/02 Sessions` |
+| Agent Client | 0.12.1 | the buttons and chat on Home; runs Claude Code through the ACP adapter `claude-agent-acp` 0.73.0 with the vault as working directory; exports chats to `06 AI Team/02 Sessions` |
 | Writers Alembic | 1.2.3 | in-editor AI workflows from `_alembic/` (rewrite in my voice, tighten, attribute, key takeaways, FAQ, alt text, de-slop) through its Claude CLI provider |
 | Writing Studio | 3.1.0 | optional `03 Blogs` workspace: binder, focus mode, export, WordPress publishing by a human; startup is disabled |
 | Image Layouts | 0.18.0 | fenced `image-layout-*` blocks in drafts; `layout_convert.py` turns them into HTML figures for rendering |

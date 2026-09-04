@@ -52,6 +52,24 @@
         "own",
         "third-party"
       ]
+    },
+    "approval": {
+      "description": "The decision that an approval note governs.",
+      "values": [
+        "strategy",
+        "outline",
+        "image",
+        "editorial"
+      ]
+    },
+    "decision": {
+      "description": "Current approval state.",
+      "values": [
+        "requested",
+        "approved",
+        "declined",
+        "expired"
+      ]
     }
   }
 }

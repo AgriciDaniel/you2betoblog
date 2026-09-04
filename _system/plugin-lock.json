@@ -1,6 +1,6 @@
 {
   "schema": "yt2b-plugin-lock/v1",
-  "generated_at": "2026-09-03",
+  "generated_at": "2026-09-04",
   "note": "Pinned versions for everything this vault depends on. Obsidian plugin files are installed per machine under .obsidian/plugins (gitignored); hashes are SHA-256 of the release assets that were installed here.",
   "obsidian_plugins": [
     {
@@ -42,6 +42,7 @@
       "license": "MIT",
       "source": "https://github.com/writerp-777/obsidian-writing-studio",
       "release": "https://github.com/writerp-777/obsidian-writing-studio/releases/tag/3.1.0",
+      "upstream_commit": "7dd789e22f9bf6bac494856b0bf6703bf06b3744",
       "required": true,
       "note": "Installed with plugins/writing-studio-no-startup-restore.patch so a workspace-restored launcher does not activate Writing Studio while Open on startup is disabled. The same patch adds a visible return to YouTube to blog in the Launcher and Binder. Deliberate launcher commands still activate it.",
       "patch": {
@@ -113,8 +114,8 @@
       "note": "Vault-local plugin, canonical source in plugins/youtubetoblog-home; copied into .obsidian/plugins/youtubetoblog-home. Owns the landing page and default left sidebar, including New chat, two-way saved-source promotion, dedicated app-page navigation and live counts. On first load it provisions the Writing Studio project over 03 Blogs, selects it, and disables overlapping frontmatter and daily-note writes. Hashes are of the source files.",
       "files": {
         "manifest.json": "0808d4225304a4e22edf94d2c77e0e9448f8ce000bba91afc6fa86a195ac9fcc",
-        "main.js": "deb9442fcbbe2062fb5c7784e291ea2f8c2922a3fd5265c6ba5bb8e825167eb9",
-        "styles.css": "1223dda1bfd316d444e01acbcef3f2c5d29a4ffd6d263ecf12889936acff25a0"
+        "main.js": "6ff2f0103eddfdf06198413110d66470dd57b26cc0dea7d2a3a36d9c1407adc4",
+        "styles.css": "964978f3a99d6d3000ff21367d5888f9ed01e53a2d26f2498d7ef4303789e1f4"
       }
     },
     {
@@ -131,6 +132,10 @@
       "patch": {
         "path": "plugins/rss-dashboard-safe-save.patch",
         "sha256": "e835a732d84f6a21cbe9d2c2997d2212db60761f28361d1e12bd1542b03a70da"
+      },
+      "default_data": {
+        "path": "plugins/rss-dashboard-data.json",
+        "sha256": "8bc69396b05af0c4e2639dfdbbaeeb636228f9bbe3b37bc55ab7001dbe50fd81"
       },
       "files": {
         "manifest.json": "a8f56b1f144f16cc6bea8267b139881bf5adf4a3cd24d304f4dba9760a33ade9",
@@ -152,10 +157,10 @@
   "claude_code_plugins": [
     {
       "id": "claude-blog",
-      "version": "2.1.0",
+      "version": "2.1.1",
       "license": "MIT",
       "required": true,
-      "source": "https://github.com/AI-Marketing-Hub/claude-blog",
+      "source": "https://github.com/AgriciDaniel/claude-blog",
       "provides": [
         "~/.claude/scripts/blog_render.py",
         "~/.claude/scripts/blog_preflight.py",
@@ -163,7 +168,21 @@
         "~/.claude/scripts/analyze_blog.py",
         "~/.claude/scripts/load_untrusted_root.py",
         "agents blog-researcher, blog-writer, blog-seo, blog-reviewer"
-      ]
+      ],
+      "release": "https://github.com/AgriciDaniel/claude-blog/releases/tag/v2.1.1",
+      "commit": "aec971ac511370c6216cd93776c9cf2fec97b32a",
+      "files": {
+        "scripts/blog_render.py": "b764527fa3d3c8add4389ff2edd500ca1f24de4dfb3c5ae1607bc4d656948b14",
+        "scripts/blog_preflight.py": "f2d363ff3d60100464561e4087f4063677f390d757851b58776d30f7a1f57cf5",
+        "scripts/generate_hero.py": "6cc7068794477ac481f772698bd44d266a76d1877634b6d7f1e8576fde276ac4",
+        "scripts/analyze_blog.py": "3417a53f8c2c61db80c7d8fd79507af31a3d93d06410bda55d685a381b2e6de1",
+        "scripts/load_untrusted_root.py": "fff64fe01f1fbea13f6b76f94dc4c7ea70c83adc0b3bd070b431b79214ce7ae3",
+        "agents/blog-researcher.md": "b343b89fb97234a63f393efb09d6def7c186d3ca5587612cd5e359c8b6978ab2",
+        "agents/blog-writer.md": "1b510e2d8d206af9d3561e8e04a4fca9b1968c865e5bbabea21b103f900c58d7",
+        "agents/blog-seo.md": "6976e4a0c88bd6ff65d969266f0052b0d31f13bd7da0bd3e25f76a684cc77273",
+        "agents/blog-reviewer.md": "5ea0b050b4d8b78cc70c749ba6fc37391770cab33c308376ff90470ecd1a01cf"
+      },
+      "note": "Public release pinned for fresh installs. The five required scripts and four agents match the previously integrated 2.1.0 plugin payload byte for byte. Use the repository installer to install supporting scripts, templates, references and agents; the Obsidian plugin installer does not install this dependency."
     },
     {
       "id": "video-analyzer",

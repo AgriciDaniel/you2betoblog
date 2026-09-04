@@ -19,7 +19,8 @@
     "keep_video",
     "pause_for_outline",
     "max_video_minutes",
-    "visuals"
+    "visuals",
+    "word_count_tolerance_percent"
   ],
   "properties": {
     "type": {
@@ -110,6 +111,13 @@
       ],
       "default": "frames+charts",
       "description": "Visual ladder: real frames, plus SVG charts when the brief has data points, plus AI images through Banana Claude."
+    },
+    "word_count_tolerance_percent": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 30,
+      "description": "Delivery blocks when the article differs from its word-count goal by more than this percentage and warns at half this value."
     }
   }
 }

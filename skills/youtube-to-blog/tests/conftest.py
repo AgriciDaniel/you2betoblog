@@ -29,7 +29,7 @@ def load_script(name: str):
 
 
 SETTINGS = {
-    "type": "yt2b-settings", "author": "Test Author", "site_url": "https://example.org", "language": "en",
+    "type": "yt2b-settings", "author": "Test Author", "site_url": "https://brandsite.dev", "language": "en",
     "default_rights": "ask", "default_mode": "companion", "max_blogs_per_video": 3, "frame_width": 1600,
     "max_frames_own": 8, "max_frames_third_party": 4, "keep_video": False, "pause_for_outline": True,
     "max_video_minutes": 90, "visuals": "frames+charts",

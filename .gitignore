@@ -36,3 +36,12 @@ __pycache__/
 /Writing Projects/
 /Untitled*
 /待办/
+
+# Personal discovery material and attachments, including non-Markdown exports.
+/01 Queue/Discovery/Saved/
+/01 Queue/RSS Dashboard Data/
+/_assets/
+/06 AI Team/02 Sessions/*
+!/06 AI Team/02 Sessions/handoff.md
+/06 AI Team/03 Knowledge/05 Learnings/
+.ruff_cache/

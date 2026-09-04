@@ -13,8 +13,9 @@ created: "{{date}}"
 updated: "{{date}}"
 tags:
   - yt2b
-  - approval
-  - strategy
+  - format/approval
+  - approval/strategy
+  - decision/requested
 ---
 
 # {{title}}

@@ -2,13 +2,13 @@
 """Approval notes for the youtube-to-blog pipeline (04 Approvals/queue).
 
 Commands:
-  create   write a new approval note (kind strategy | outline | image)
+  create   write a new approval note (strategy | outline | image | editorial)
   check    read the decision: status property, ticked options, answers, expiry
   set      record a decision (status, selected options, decision text)
 
 Note names: strategy `<date>-<videoId>-strategy.md`; outline
 `<date>-<videoId>-outline[-<blog-slug>].md` (slug when --blog is given);
-image `<date>-<videoId>-image-<blog-slug>.md` (--blog required).
+image and editorial `<date>-<videoId>-<kind>-<blog-slug>.md` (--blog required).
 
 Approval is granted only when the note's `status` property is `approved`.
 A ticked option box on its own is never approval. A request that passes its
@@ -27,6 +27,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import yt2b_common as common  # noqa: E402
+import contract  # noqa: E402
+import make_run_note  # noqa: E402
 
 DEFAULT_EXPIRES_HOURS = 48
 OPTION_RE = re.compile(r"^\s*-\s*\[([ xX])\]\s*([A-Za-z0-9_.-]+)\s*:\s*(.*?)\s*$")
@@ -110,7 +112,7 @@ def blog_slug(blog_dir: Path) -> str:
 
 def note_name(video_id: str, kind: str, slug: str | None) -> str:
     base = common.approval_note_name(video_id, kind)[:-3]
-    if slug and kind in ("image", "outline"):
+    if slug and kind in ("image", "outline", "editorial"):
         base = f"{base}-{slug}"
     return base + ".md"
 
@@ -184,6 +186,13 @@ def tick_options(body: str, ids: list[str]) -> str:
     return "\n".join(out) + ("\n" if body.endswith("\n") else "")
 
 
+def refresh_run(vault: Path, fm: dict) -> None:
+    """Refresh approval backlinks on the related run note."""
+    run_note = contract.resolve_wikilink(vault, fm.get("run"), "run.md")
+    if run_note is not None and run_note.is_file():
+        make_run_note.update_run_note(vault, run_note.parent)
+
+
 # ---------------------------------------------------------------------------
 # Commands
 # ---------------------------------------------------------------------------
@@ -206,15 +215,16 @@ def cmd_create(args, vault: Path) -> int:
     blog_dir = Path(args.blog).expanduser().resolve() if args.blog else None
     if blog_dir is not None and not blog_dir.is_dir():
         return common.fail(common.EXIT_INPUT, f"blog dir not found: {blog_dir}")
-    if kind == "image" and blog_dir is None:
-        return common.fail(common.EXIT_INPUT, "--blog is required for --kind image")
+    if kind in ("image", "editorial") and blog_dir is None:
+        return common.fail(common.EXIT_INPUT, f"--blog is required for --kind {kind}")
     slug = blog_slug(blog_dir) if blog_dir is not None else None
 
     video_id = video_id_for_run(run_dir)
     queue_dir = vault / common.ROOMS["approvals_queue"]
     note = queue_dir / note_name(video_id, kind, slug)
     if note.exists():
-        _, _, state = read_state(note)
+        existing_fm, _, state = read_state(note)
+        refresh_run(vault, existing_fm)
         common.warn(f"approval note exists, left untouched: {note}")
         common.emit({"note": str(note), "status": state["status"], "kind": kind, "created": False,
                      "selected": state["selected"], "expired": state["expired"]})
@@ -244,7 +254,7 @@ def cmd_create(args, vault: Path) -> int:
         "cost_estimate": args.cost_estimate or "",
         "created": common.today(),
         "updated": common.today(),
-        "tags": ["yt2b", "approval", kind],
+        "tags": contract.approval_tags(kind, "requested"),
     }
     request_text = request_file.read_text(encoding="utf-8").strip()
     option_lines = "\n".join(f"- [ ] {oid}: {label}" for oid, label in options) or "- [ ] proceed: Proceed as requested"
@@ -257,6 +267,7 @@ def cmd_create(args, vault: Path) -> int:
     ]
     body = common.join_sections(f"# {args.title}\n", sections)
     common.write_note(note, frontmatter, body)
+    refresh_run(vault, frontmatter)
     common.emit({"note": str(note), "status": "requested", "kind": kind, "created": True,
                  "options": [oid for oid, _ in options], "questions": [key for key, _ in questions],
                  "expires": expires.isoformat()})
@@ -276,8 +287,11 @@ def cmd_check(args, vault: Path) -> int:
         state["status"] = "expired"
     if list(fm.get("selected") or []) != state["selected"]:
         updates["selected"] = state["selected"]
+    updates["tags"] = contract.approval_tags(str(fm.get("kind") or "approval"), state["status"])
     if updates:
         common.update_note(note, updates)
+        fm.update(updates)
+    refresh_run(vault, fm)
     common.emit({
         "note": str(note),
         "status": state["status"],
@@ -323,10 +337,13 @@ def cmd_set(args, vault: Path) -> int:
         body = common.join_sections(preamble, new_sections)
     options = parse_options(_section(common.split_sections(body)[1], "Options"))
     selected = [o["id"] for o in options if o["ticked"]]
-    updates = {"status": args.status, "selected": selected}
+    updates = {"status": args.status, "selected": selected,
+               "tags": contract.approval_tags(str(fm.get("kind") or "approval"), args.status)}
     if args.status in ("approved", "declined"):
         updates["decided"] = dt.datetime.now().replace(microsecond=0).isoformat()
     common.update_note(note, updates, body)
+    fm.update(updates)
+    refresh_run(vault, fm)
     common.emit({"note": str(note), "status": args.status, "selected": selected,
                  "decided": updates.get("decided", _iso(fm.get("decided")))})
     return common.EXIT_OK

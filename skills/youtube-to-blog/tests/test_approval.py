@@ -65,7 +65,7 @@ def test_create_check_set(tmp_path):
     assert "## Request" in text and "## Decision" in text
     fm, _ = common.read_note(note)
     assert fm["type"] == "yt2b-approval" and fm["status"] == "requested" and fm["kind"] == "strategy"
-    assert fm["tags"] == ["yt2b", "approval", "strategy"] and fm["selected"] == []
+    assert fm["tags"] == ["yt2b", "format/approval", "approval/strategy", "decision/requested"] and fm["selected"] == []
     assert fm["run"].startswith("[[02 Videos/")
 
     code, data, _ = run_script("check", note)
@@ -85,6 +85,8 @@ def test_create_check_set(tmp_path):
     assert data["approved"] is False, "a ticked box alone is not approval"
     fm, _ = common.read_note(note)
     assert fm["selected"] == ["blog-1"], "check syncs the selected list into the properties"
+    run_fm, run_body = common.read_note(run / "run.md")
+    assert run_fm["approvals"] and "## Approvals" in run_body
 
     code, data, err = run_script("set", note, "--status", "approved", "--decision", "Go with blog-1.")
     assert code == 0, err
@@ -93,6 +95,7 @@ def test_create_check_set(tmp_path):
     assert data["approved"] is True and data["status"] == "approved" and data["selected"] == ["blog-1"]
     fm, body = common.read_note(note)
     assert fm["decided"] and "Go with blog-1." in body
+    assert fm["tags"][-1] == "decision/approved"
     code, data, _ = run_script("set", note, "--status", "approved", "--decision", "Go with blog-1.")
     assert body.count("Go with blog-1.") == 1 and common.read_note(note)[1].count("Go with blog-1.") == 1
 

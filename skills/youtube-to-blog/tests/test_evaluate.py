@@ -65,7 +65,7 @@ def run_script(*args):
 
 
 def preflight_report(passed: bool) -> dict:
-    gates = [{"gate": n, "name": f"Gate {n}", "passed": True, "violations": [], "warnings": []} for n in range(1, 6)]
+    gates = [{"gate": n, "name": f"Gate {n}", "passed": True, "violations": [], "warnings": []} for n in range(1, 7)]
     if not passed:
         gates[3]["passed"] = False
         gates[3]["violations"] = ["reviewer blocked"]
@@ -157,6 +157,7 @@ def test_full_run_passes(tmp_path):
     assert fm["type"] == "yt2b-evaluation" and fm["score"] == 92 and fm["blocking"] is False
     assert fm["overlap_ratio"] == data["overlap_ratio"] and fm["links_ok"] is True and fm["verification_section"] is True
     assert fm["blog"].startswith("[[03 Blogs/") and fm["run"].startswith("[[02 Videos/")
+    assert fm["tags"] == ["yt2b", "format/evaluation", "stage/done"]
     assert "| Reviewer score | 92 | at least 90 | yes |" in body and "| Content Quality | 27 | 30 |" in body
     post_fm, _ = common.read_note(blog / f"{SLUG}.md")
     assert post_fm["yt2b_score"] == 92 and post_fm["yt2b_status"] == "reviewed"

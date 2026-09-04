@@ -3,7 +3,7 @@ type: yt2b-knowledge
 title: doctor.py
 kind: script
 created: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-04
 tags:
   - yt2b
   - knowledge
@@ -12,16 +12,17 @@ tags:
 
 # doctor.py
 
-**Purpose.** Environment check for the pipeline: tools, video-analyzer and its preflight, keys by name, blog scripts and agents, browser, vault rooms, Obsidian plugins, Banana Claude state, root voice files. Run once per session; the first step of every command in [[skills/youtube-to-blog/SKILL|the skill]].
+**Purpose.** Environment check for the pipeline: tools, video-analyzer and its preflight, keys by name, blog scripts and agents, the vault skill and its two agents, browser, vault rooms, Obsidian plugins, Banana Claude state, root voice files. Run once per session; the first step of every command in [[skills/youtube-to-blog/SKILL|the skill]].
 
 **Usage.**
 
 ```bash
 python3 skills/youtube-to-blog/scripts/doctor.py --vault "<vault>"
+python3 skills/youtube-to-blog/scripts/doctor.py --vault "<vault>" --for-write
 python3 skills/youtube-to-blog/scripts/doctor.py --print analyze-dir
 ```
 
-**Inputs.** The vault path (default: detected from the working directory), `VIDEO_ANALYZER_DIR` when set, `~/.config/video-analyzer/.env` (presence of names only), `~/.claude/scripts`, `~/.claude/agents`, `~/.claude/settings.json` (enabledPlugins), `.obsidian/community-plugins.json`.
+**Inputs.** The vault path (default: detected from the working directory), `VIDEO_ANALYZER_DIR` when set, `~/.config/video-analyzer/.env` (presence of names only), `~/.claude/scripts`, `~/.claude/agents`, `~/.claude/settings.json` (enabledPlugins), `.obsidian/community-plugins.json`. `--for-write` also requires a real author, non-placeholder site URL, BRAND.md and VOICE.md.
 
 **Outputs.** A table on stderr and one JSON object on stdout: `ok`, `required_failures`, `warnings`, `analyze_dir`, `whisper_key`, `vault`, `checks` (name, status ok | fail | warn | info, required, detail). `--print analyze-dir` prints only the path. No secret value is ever read into the output.
 

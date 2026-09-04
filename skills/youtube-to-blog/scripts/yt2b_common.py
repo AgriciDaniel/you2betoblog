@@ -71,7 +71,7 @@ QUEUE_STATUSES = ("queued", "running", "done", "failed")
 VIDEO_STATUSES = ("fetched", "analyzed", "briefed", "strategy", "writing", "done", "blocked")
 BLOG_STATUSES = ("drafting", "drafted", "reviewed", "blocked", "published")
 APPROVAL_STATUSES = ("requested", "approved", "declined", "expired")
-APPROVAL_KINDS = ("strategy", "outline", "image")
+APPROVAL_KINDS = ("strategy", "outline", "image", "editorial")
 RIGHTS = ("own", "third-party")
 MODES = ("companion", "expand")
 VISUALS = ("frames", "frames+charts", "frames+charts+ai")
@@ -90,6 +90,7 @@ DEFAULT_SETTINGS = {
     "pause_for_outline": True,
     "max_video_minutes": 90,
     "visuals": "frames+charts",
+    "word_count_tolerance_percent": 30,
 }
 
 _YOUTUBE_PATTERNS = [

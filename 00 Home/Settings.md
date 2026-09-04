@@ -13,7 +13,8 @@ keep_video: false
 pause_for_outline: true
 max_video_minutes: 90
 visuals: frames+charts
-updated: 2026-09-03
+word_count_tolerance_percent: 30
+updated: 2026-09-04
 ---
 
 # Settings
@@ -33,3 +34,4 @@ Edit the properties above. Every script reads them through `yt2b_common.load_set
 - `pause_for_outline`: open an outline approval before drafting each article (default `true`).
 - `max_video_minutes`: videos longer than this are refused unless `--force-long` is passed (default `90`).
 - `visuals`: `frames`, `frames+charts` or `frames+charts+ai`; charts need data points in the brief, AI images need Banana Claude (default `frames+charts`).
+- `word_count_tolerance_percent`: delivery blocks when the article differs from its word-count goal by more than this percentage, and warns at half this value (default `30`).

@@ -21,7 +21,7 @@ post's `yt2b_status`; the other rows are findings for the editor and the
 | `score` | at least 90 | the blog-reviewer's Exceptional band, the same bar Gate 4 enforces | `### Overall Score: N/100` parsed from `review.md` |
 | `p0` | 0 | no load-bearing defect (fabricated number, broken structure, plagiarism risk) | bullets under the Critical heading of `review.md`, or 0 when it states "no P0" or "zero P0" |
 | `blocking` | false | the reviewer cleared the post | the last `BLOCKING:` line of `review.md` |
-| `gates_passed` | true | the five delivery gates passed in one run | `preflight-report.json`: `blocked` false and gates 1 to 5 all passed |
+| `gates_passed` | true | all six delivery gates passed in one run | `preflight-report.json`: `blocked` false and gates 1 to 6 all passed. Gate 6 enforces setup, approvals, authorization, canonical, slug, embed, dash, word-count and reviewer finding rules |
 | `overlap_ratio` | at most 0.12 (companion), at most 0.06 (expanded) | the post is written, not transcribed | share of the article's 8-grams (lowercase, punctuation stripped, code and links removed) that appear in the transcript from `analysis/segments.json` |
 | `frames_in_place` | true | every frame sits in the section that covers its timestamp | for each manifest image with `t_s`: the H2 block containing it must hold a deep link inside the brief section's time range (the image's own caption excluded) or a heading matching the brief section |
 | `attribution_ok` | true | the creator is credited up front | channel name and `youtube.com/watch?v=<id>` within the first 200 words; third-party mode also needs the disclosure line |
@@ -30,7 +30,7 @@ post's `yt2b_status`; the other rows are findings for the editor and the
 | `verification_section` | true | the added-value element exists | a `## What we verified` or `### What we verified` heading |
 | `voice_flags` | 0 | the post respects the voice profile | occurrences of the phrases listed under a "Taboo phrases" (or "avoid", "never use") heading in the root `VOICE.md`, or in its `taboo_phrases` property |
 
-Status rule: `reviewed` when `score` is at least 90 and `blocking` is false,
+Status rule: `reviewed` when `score` is at least 90 and every gate passes,
 else `blocked`. A blocked post stays in the vault with its evaluation and
 `review.md` so the editor can repair it in Writing Studio and rerun delivery.
 

@@ -3,7 +3,7 @@ type: yt2b-knowledge
 title: approval.py
 kind: script
 created: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-04
 tags:
   - yt2b
   - knowledge
@@ -15,16 +15,18 @@ Creates, checks and decides approval notes in `04 Approvals/queue`. Source: `ski
 
 ## Usage
 
-- `approval.py --vault PATH create --kind strategy|outline|image --run RUN_DIR [--blog BLOG_DIR] --title T --request-file PATH [--options "id=label;id=label"] [--questions "key=question;..."] [--expires-hours 48] [--cost-estimate TEXT]`
+- `approval.py --vault PATH create --kind strategy|outline|image|editorial --run RUN_DIR [--blog BLOG_DIR] --title T --request-file PATH [--options "id=label;id=label"] [--questions "key=question;..."] [--expires-hours 48] [--cost-estimate TEXT]`
 - `approval.py check NOTE_PATH` prints `{status, approved, selected, answers, expired, kind}`
 - `approval.py set NOTE_PATH --status approved|declined|requested|expired [--decision TEXT] [--selected id ...]`
 
 ## Behaviour
 
-- Note names: `<date>-<videoId>-strategy.md`, `<date>-<videoId>-outline[-<blog-slug>].md`, `<date>-<videoId>-image-<blog-slug>.md` (`--blog` required for image).
+- Note names: `<date>-<videoId>-strategy.md`, `<date>-<videoId>-outline[-<blog-slug>].md`, and a blog-specific name for image or editorial decisions. `--blog` is required for image and editorial.
 - `create` never overwrites an existing note (returns it with `created: false`).
 - `check` reads ticked `- [x] id: label` lines and `answer:` lines, syncs `selected`, and marks a past-deadline request as `expired`. Approval means `status: approved` only.
 - `set --selected` ticks boxes for the `--auto` path; `--decision` appends once under `## Decision`.
+- Every change refreshes the matching run note's `approvals` property and Approvals section.
+- An editorial waiver for a Critical or High reviewer finding must be approved with the `accept-high` option selected. A general approved status is not enough.
 
 ## Exit codes
 

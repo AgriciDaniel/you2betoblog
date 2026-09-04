@@ -29,6 +29,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import yt2b_common as common  # noqa: E402
+import contract  # noqa: E402
 
 # Expected community plugin ids; the Image Layouts plugin registers as obsidian-image-layouts.
 OBSIDIAN_PLUGINS = {"agent-client": ("agent-client",), "writers-alembic": ("writers-alembic",),
@@ -198,6 +199,10 @@ def check_obsidian_plugin_integrity(report: Report, vault: Path) -> None:
 
     for plugin_id in ("writing-studio", "youtubetoblog-home", "rss-dashboard"):
         entry = entries.get(plugin_id)
+        if plugin_id == "rss-dashboard" and plugin_id not in enabled:
+            report.add("obsidian plugin rss-dashboard integrity", True,
+                       "optional plugin is not enabled", info=True)
+            continue
         failures: list[str] = []
         if plugin_id not in enabled:
             failures.append("not enabled in community-plugins.json")
@@ -218,6 +223,13 @@ def check_obsidian_plugin_integrity(report: Report, vault: Path) -> None:
                 failures.append("missing safety patch")
             elif not expected_patch or file_sha256(patch_path) != expected_patch:
                 failures.append("patch hash mismatch")
+        if entry and entry.get("default_data"):
+            default_data = entry.get("default_data", {})
+            data_template = vault / str(default_data.get("path", ""))
+            if not data_template.is_file():
+                failures.append("missing default plugin data")
+            elif file_sha256(data_template) != default_data.get("sha256"):
+                failures.append("default plugin data hash mismatch")
         if plugin_id == "rss-dashboard" and entry:
             bundle = vault / ".obsidian" / "plugins" / plugin_id / "main.js"
             if bundle.is_file() and "Refusing to overwrite existing article:" not in bundle.read_text(encoding="utf-8"):
@@ -257,13 +269,38 @@ def check_root_docs(report: Report, vault: Path) -> None:
         report.add(name, present, "present" if present else "missing: run /youtube-to-blog setup", info=True)
 
 
+def check_controller(report: Report) -> None:
+    path = Path(__file__).resolve().parent / "pipeline.py"
+    report.add("deterministic pipeline controller", path.is_file(), str(path))
+
+
+def check_vault_skill_and_agents(report: Report, vault: Path) -> None:
+    paths = (
+        "skills/youtube-to-blog/SKILL.md",
+        "agents/yt2b-analyst.md",
+        "agents/yt2b-strategist.md",
+        ".claude/skills/youtube-to-blog/SKILL.md",
+        ".claude/agents/yt2b-analyst.md",
+        ".claude/agents/yt2b-strategist.md",
+    )
+    for relative in paths:
+        path = vault / relative
+        report.add(f"vault agent asset {relative}", path.is_file(), str(path))
+
+
+def check_write_settings(report: Report, vault: Path) -> None:
+    failures = contract.setup_violations(vault)
+    report.add("write-ready identity and site settings", not failures,
+               "ready" if not failures else "; ".join(failures))
+
+
 def print_table(report: Report) -> None:
     labels = {"ok": "OK  ", "fail": "FAIL", "warn": "WARN", "info": "INFO"}
     for row in report.checks:
         common.warn(f"[{labels[row['status']]}] {row['name']}: {row['detail']}")
 
 
-def build_report(vault: Path) -> tuple[Report, Path | None, bool]:
+def build_report(vault: Path, for_write: bool = False) -> tuple[Report, Path | None, bool]:
     report = Report()
     check_python(report)
     check_binaries(report)
@@ -275,9 +312,13 @@ def build_report(vault: Path) -> tuple[Report, Path | None, bool]:
     whisper = check_optional_keys(report)
     check_banana(report)
     check_vault(report, vault)
+    check_controller(report)
+    check_vault_skill_and_agents(report, vault)
     check_obsidian_plugins(report, vault)
     check_obsidian_plugin_integrity(report, vault)
     check_root_docs(report, vault)
+    if for_write:
+        check_write_settings(report, vault)
     return report, analyze_dir, whisper
 
 
@@ -286,6 +327,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--vault", help="Vault root (default: detected from the working directory)")
     parser.add_argument("--json", action="store_true", help="Accepted for compatibility; JSON is always printed on stdout")
     parser.add_argument("--print", dest="print_what", choices=["analyze-dir"], help="Print only the resolved path")
+    parser.add_argument("--for-write", action="store_true", help="also require author, site URL, BRAND.md and VOICE.md")
     args = parser.parse_args(argv)
 
     if args.print_what == "analyze-dir":
@@ -303,7 +345,7 @@ def main(argv: list[str] | None = None) -> int:
     if not vault.is_dir():
         return common.fail(common.EXIT_INPUT, f"vault path is not a directory: {vault}")
 
-    report, analyze_dir, whisper = build_report(vault)
+    report, analyze_dir, whisper = build_report(vault, args.for_write)
     print_table(report)
     ok = not report.required_failures
     common.emit({

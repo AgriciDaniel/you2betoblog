@@ -12,13 +12,13 @@ def test_create_from_info(vault, run_dir, capsys):
     assert code == 0 and out["status"] == "fetched"
     fm, body = common.read_note(run_dir / "run.md")
     for key in ("type", "video_id", "video_url", "title", "channel", "channel_url", "published", "duration_s", "rights",
-                "mode", "status", "captions", "blogs", "queue", "created", "updated", "tags"):
+                "mode", "status", "captions", "blogs", "queue", "approvals", "created", "updated", "tags"):
         assert key in fm, key
     assert fm["type"] == "yt2b-video" and fm["video_url"] == "https://www.youtube.com/watch?v=abcdefghijk"
     assert fm["rights"] == "own" and fm["duration_s"] == 32 and fm["blogs"] == []
     assert fm["tags"] == ["yt2b", "stage/fetched", "format/video", "source/youtube", "rights/own"]
     headings = [h for h, _ in common.split_sections(body)[1]]
-    assert headings == ["Video", "Summary", "Key takeaways", "Tags", "Frames", "Artifacts", "Log"]
+    assert headings == ["Video", "Summary", "Key takeaways", "Tags", "Frames", "Approvals", "Artifacts", "Log"]
     assert "fetched: ok" in body
     assert fm["thumbnail"] == "" and fm["frames"] == 0 and "hero" not in fm
 
@@ -120,7 +120,7 @@ def test_blogs_section_hero_and_gallery_idempotent(vault, run_dir, capsys):
     fm, body = common.read_note(run_dir / "run.md")
     assert fm["hero"] == "03 Blogs/2026-09-03 my-post/hero.jpg"
     headings = [h for h, _ in common.split_sections(body)[1]]
-    assert headings == ["Video", "Summary", "Key takeaways", "Tags", "Frames", "Blogs", "Artifacts", "Log"]
+    assert headings == ["Video", "Summary", "Key takeaways", "Tags", "Frames", "Blogs", "Approvals", "Artifacts", "Log"]
     blogs = dict(common.split_sections(body)[1])["Blogs"]
     assert blogs.startswith("**[[03 Blogs/2026-09-03 my-post/my-post|My post title]]**")
     assert "![hero](03%20Blogs/2026-09-03%20my-post/hero.jpg)" in blogs

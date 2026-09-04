@@ -182,3 +182,26 @@
 .yt2b-sidebar-spacer { flex: 1; min-height: 16px; }
 .yt2b-sidebar-studio { width: 100%; min-height: 36px; justify-content: center; gap: 7px; border: none; border-top: 1px solid var(--yt2b-line, var(--background-modifier-border)); border-radius: 0; background: transparent; color: var(--yt2b-muted, var(--text-muted)); font-size: 12px; }
 .yt2b-sidebar-studio:hover { color: var(--yt2b-ink, var(--text-normal)); background: var(--yt2b-raised, var(--background-modifier-hover)); }
+
+/* Keep controls reachable in narrow panes and short windows. */
+.yt2b-home { overflow-y: auto; }
+.yt2b-home-page { margin-top: clamp(24px, 10vh, 100px); padding-bottom: 32px; }
+.yt2b-home-chips, .yt2b-home-actions { flex-wrap: wrap; justify-content: center; }
+.yt2b-home-hint { text-align: center; max-width: 540px; color: var(--text-muted); }
+.yt2b-home-recent-row:focus-visible, .yt2b-home-shortcut:focus-visible,
+.yt2b-home button:focus-visible, .yt2b-sidebar button:focus-visible {
+  outline: 2px solid var(--interactive-accent); outline-offset: 2px;
+}
+@media (max-width: 600px) {
+  .yt2b-home-recent-row { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+  .yt2b-home-recent-date { grid-column: 1 / -1; }
+}
+
+.yt2b-home-page > * { flex-shrink: 0; }
+.yt2b-home-help {
+  min-height: 30px; padding: 4px 12px; border-radius: 8px;
+  border: 1px solid var(--yt2b-line, var(--background-modifier-border));
+  background: transparent; color: var(--yt2b-muted, var(--text-muted));
+  font-size: 12px; box-shadow: none;
+}
+.yt2b-home-help:hover { background: var(--yt2b-raised, var(--background-modifier-hover)); }

@@ -136,8 +136,10 @@ class HomeView extends ItemView {
     super(leaf);
     this.plugin = plugin;
     this.navigation = false;
-    this.rights = plugin.settings.defaultRights;
-    this.mode = plugin.settings.defaultMode;
+    const defaults = plugin.pipelineDefaults();
+    this.rights = defaults.rights;
+    this.mode = defaults.mode;
+    this.processing = false;
   }
 
   getViewType() { return VIEW_TYPE; }
@@ -164,6 +166,7 @@ class HomeView extends ItemView {
       type: "text",
       placeholder: "Paste a YouTube link",
     });
+    this.input.setAttribute("aria-label", "YouTube video URL");
     this.input.spellcheck = false;
     this.input.addEventListener("keydown", (ev) => {
       if (ev.key === "Enter") { ev.preventDefault(); this.process(false); }
@@ -171,15 +174,19 @@ class HomeView extends ItemView {
     });
 
     const chips = page.createDiv({ cls: "yt2b-home-chips" });
-    this.rightsChips = this.chipGroup(chips, ["ask", "own", "third-party"], this.rights, (v) => { this.rights = v; });
-    this.modeChips = this.chipGroup(chips, ["companion", "expand"], this.mode, (v) => { this.mode = v; });
+    this.rightsChips = this.chipGroup(chips, ["ask", "own", "third-party"], this.rights, (v) => { this.rights = v; }, "Video rights");
+    this.modeChips = this.chipGroup(chips, ["companion", "expand"], this.mode, (v) => { this.mode = v; }, "Writing mode");
 
     const actions = page.createDiv({ cls: "yt2b-home-actions" });
     const processBtn = actions.createEl("button", { cls: "yt2b-home-primary", text: "Process" });
     processBtn.addEventListener("click", () => this.process(false));
     const analyzeBtn = actions.createEl("button", { cls: "yt2b-home-secondary", text: "Analyze only" });
     analyzeBtn.addEventListener("click", () => this.process(true));
+    this.actionButtons = [processBtn, analyzeBtn];
+    page.createDiv({ cls: "yt2b-home-hint", text: "Process pauses at strategy approval. Analyze only stops after the brief. Both can incur provider charges." });
     page.createDiv({ cls: "yt2b-home-hint", text: "Enter to process, Esc to clear" });
+    const help = page.createEl("button", { text: "Setup and help", cls: "yt2b-home-help" });
+    help.addEventListener("click", () => this.plugin.openTarget({ file: HOME_NOTE }));
 
     const row = page.createDiv({ cls: "yt2b-home-shortcuts" });
     for (const item of SHORTCUTS) {
@@ -200,15 +207,19 @@ class HomeView extends ItemView {
     window.setTimeout(() => this.input.focus(), 0);
   }
 
-  chipGroup(parent, values, current, onPick) {
+  chipGroup(parent, values, current, onPick, label) {
     const group = parent.createDiv({ cls: "yt2b-home-chip-group" });
+    group.setAttribute("role", "group");
+    group.setAttribute("aria-label", label);
     const buttons = [];
     for (const value of values) {
       const chip = group.createEl("button", { cls: "yt2b-home-chip", text: value });
+      chip.setAttribute("aria-pressed", String(value === current));
       if (value === current) chip.addClass("is-active");
       chip.addEventListener("click", () => {
-        buttons.forEach((b) => b.removeClass("is-active"));
+        buttons.forEach((b) => { b.removeClass("is-active"); b.setAttribute("aria-pressed", "false"); });
         chip.addClass("is-active");
+        chip.setAttribute("aria-pressed", "true");
         onPick(value);
         this.input.focus();
       });
@@ -227,25 +238,53 @@ class HomeView extends ItemView {
       row.createSpan({ cls: "yt2b-home-recent-name", text: run.title });
       row.createSpan({ cls: "yt2b-home-recent-status", text: run.status });
       row.createSpan({ cls: "yt2b-home-recent-date", text: run.updated });
-      row.addEventListener("click", () => this.plugin.openTarget({ file: run.path }));
+      row.setAttribute("role", "button");
+      row.setAttribute("tabindex", "0");
+      const open = () => this.plugin.openTarget({ file: run.path });
+      row.addEventListener("click", open);
+      row.addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); open(); }
+      });
     }
   }
 
   async process(analyzeOnly) {
+    if (this.processing) return;
     const videoId = youtubeVideoId(this.input.value);
     if (!videoId) {
-      new Notice("Paste a youtube.com/watch?v= link");
+      new Notice("Paste a valid YouTube video link.");
       return;
     }
+    if (!this.plugin.pendingVideos) this.plugin.pendingVideos = new Set();
+    if (this.plugin.pendingVideos.has(videoId)) {
+      new Notice("This video is already being queued.");
+      return;
+    }
+    this.plugin.pendingVideos.add(videoId);
+    this.processing = true;
+    for (const button of this.actionButtons || []) button.disabled = true;
     const watch = watchUrl(videoId);
-    const result = await this.plugin.ensureQueueNote(videoId, watch, this.rights, this.mode);
-    if (!result.created) new Notice("Already queued: " + result.path);
-    this.input.value = "";
-    const prompt = pipelinePrompt(result.path, watch, this.rights, this.mode, analyzeOnly);
-    const started = await this.plugin.startInAgentClient(prompt);
-    if (!started) {
-      await this.plugin.openTarget({ file: result.path });
-      new Notice("Queued. Install and enable Agent Client to start the pipeline from here; until then use the buttons on Home.", 8000);
+    try {
+      const result = await this.plugin.ensureQueueNote(videoId, watch, this.rights, this.mode);
+      if (!result.created) {
+        await this.plugin.openTarget({ file: result.path });
+        new Notice("Already queued. Review this note and resume its run from Agent Client; the existing rights and mode were preserved.", 8000);
+        return;
+      }
+      this.input.value = "";
+      const prompt = pipelinePrompt(result.path, watch, this.rights, this.mode, analyzeOnly);
+      const started = await this.plugin.startInAgentClient(prompt);
+      if (!started) {
+        await this.plugin.openTarget({ file: result.path });
+        new Notice("Queued. Enable Agent Client, then ask it to continue this queue note with the youtube-to-blog skill.", 8000);
+      }
+    } catch (err) {
+      console.error("[youtubetoblog Home] queue failed", err);
+      new Notice("Could not start this video. Check the queue before retrying.");
+    } finally {
+      this.processing = false;
+      this.plugin.pendingVideos.delete(videoId);
+      for (const button of this.actionButtons || []) button.disabled = false;
     }
   }
 
@@ -354,14 +393,8 @@ class HomeSettingTab extends PluginSettingTab {
       .addText((t) => t.setValue(this.plugin.settings.wordmark).onChange(async (v) => {
         this.plugin.settings.wordmark = v.trim() || DEFAULT_SETTINGS.wordmark; await save();
       }));
-    new Setting(containerEl).setName("Default rights").setDesc("Preselected rights chip.")
-      .addDropdown((d) => d.addOptions({ ask: "ask", own: "own", "third-party": "third-party" })
-        .setValue(this.plugin.settings.defaultRights)
-        .onChange(async (v) => { this.plugin.settings.defaultRights = v; await save(); }));
-    new Setting(containerEl).setName("Default mode").setDesc("Preselected mode chip.")
-      .addDropdown((d) => d.addOptions({ companion: "companion", expand: "expand" })
-        .setValue(this.plugin.settings.defaultMode)
-        .onChange(async (v) => { this.plugin.settings.defaultMode = v; await save(); }));
+    new Setting(containerEl).setName("Pipeline defaults").setDesc("Rights and writing mode come from 00 Home/Settings.md.")
+      .addButton((button) => button.setButtonText("Open Settings").onClick(() => this.plugin.openTarget({ file: SETTINGS_NOTE })));
     new Setting(containerEl).setName("Replace empty tabs").setDesc("Every new empty tab becomes the landing page.")
       .addToggle((t) => t.setValue(this.plugin.settings.replaceEmptyTabs)
         .onChange(async (v) => { this.plugin.settings.replaceEmptyTabs = v; await save(); }));
@@ -389,6 +422,7 @@ module.exports = class YoutubetoblogHome extends Plugin {
     this.registerEvent(this.app.vault.on("create", () => this.scheduleSidebarRefresh()));
     this.registerEvent(this.app.vault.on("modify", () => this.scheduleSidebarRefresh()));
     this.registerEvent(this.app.vault.on("delete", () => this.scheduleSidebarRefresh()));
+    this.registerEvent(this.app.metadataCache.on("changed", () => this.scheduleSidebarRefresh()));
     this.app.workspace.onLayoutReady(async () => {
       await this.configureWritingStudio();
       this.replaceEmptyLeaves();
@@ -406,6 +440,16 @@ module.exports = class YoutubetoblogHome extends Plugin {
 
   async loadSettings() {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+  }
+
+  pipelineDefaults() {
+    const file = this.app.vault.getFileByPath(SETTINGS_NOTE);
+    const cache = file && this.app.metadataCache.getFileCache(file);
+    const fm = (cache && cache.frontmatter) || {};
+    return {
+      rights: ["ask", "own", "third-party"].includes(fm.default_rights) ? fm.default_rights : "ask",
+      mode: ["companion", "expand"].includes(fm.default_mode) ? fm.default_mode : "companion",
+    };
   }
 
   async saveSettings() {
@@ -547,7 +591,7 @@ module.exports = class YoutubetoblogHome extends Plugin {
         videoId,
         watch,
         "ask",
-        this.settings.defaultMode,
+        this.pipelineDefaults().mode,
         sourceFile.path,
       );
       await this.linkSourceToQueue(sourceFile, result.path);
@@ -624,7 +668,7 @@ module.exports = class YoutubetoblogHome extends Plugin {
       const fm = cache && cache.frontmatter;
       if (!fm) continue;
       if (file.path.startsWith("01 Queue/") && fm.type === "yt2b-queue" && fm.status === "queued") counts.queue += 1;
-      if (file.path.startsWith("02 Videos/") && fm.type === "yt2b-video" && fm.status !== "done" && fm.status !== "failed") counts.active += 1;
+      if (file.path.startsWith("02 Videos/") && fm.type === "yt2b-video" && ["fetched", "analyzed", "briefed", "strategy", "writing"].includes(fm.status)) counts.active += 1;
       if (file.path.startsWith("04 Approvals/") && fm.type === "yt2b-approval" && fm.status === "requested") counts.approvals += 1;
       if (file.path.startsWith("03 Blogs/") && !file.path.includes("/publish-kit/") && !file.path.includes("/.render/") && fm.type === "yt2b-blog") counts.blogs += 1;
     }
