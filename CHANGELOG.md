@@ -1,8 +1,8 @@
 # Changelog
 
-## 0.1.0 (unreleased preview)
+## 0.1.0-preview.1 (2026-09-05)
 
-Release notes prepared on 2026-09-05. No stable release or public-launch acceptance is declared. See [acceptance evidence](docs/ACCEPTANCE.md) for remaining checks.
+First public prerelease. No stable-release acceptance is declared. See [acceptance evidence](docs/ACCEPTANCE.md) for remaining checks.
 
 ### Added
 
@@ -44,4 +44,4 @@ The repository plugin version remains 0.1.0. The Home component has its own vers
 - The required video analyzer restricts commercial use; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Repository MIT terms do not override dependency terms.
 - Upstream build-only dependency audit findings remain recorded in the [acceptance matrix](docs/ACCEPTANCE.md). Production-only audits previously reported zero findings; that does not clear the development toolchains.
 
-No release tag, deployment, visibility change, or stable release publication accompanies these notes.
+Published as a GitHub prerelease with source archives. No deployment or stable release is included.
