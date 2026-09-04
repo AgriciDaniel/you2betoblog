@@ -63,6 +63,8 @@ The current setup is desktop-focused. Fresh-machine installation, native Obsidia
 
 ## Development and security
 
+See the [release notes](CHANGELOG.md) for changes, upgrade guidance, verification, and known limitations.
+
 Read [CONTRIBUTING.md](CONTRIBUTING.md) for checks and [SECURITY.md](SECURITY.md) for reporting issues. The full operating manual is [inside the vault](06%20AI%20Team/03%20Knowledge/System%20Manual.md).
 
 Exact dependency versions and source links are recorded in `_system/plugin-lock.json` and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

@@ -8,8 +8,8 @@ This project separates local proof from live and human proof. A green local chec
 
 - Working-copy baseline: 111 Python tests passed; Python lint and Home JavaScript syntax passed.
 - Isolated installation: all six pinned Obsidian plugins installed and verified successfully, including both patched builds and their installer-required checks. This does not install the external Claude analysis/writing tools or prove native UI behavior.
-- Git content review: one reachable commit and 185 unique blobs scanned with the release checker's credential/email patterns; no matches. This is a bounded pattern scan, not a guarantee that every sensitive string is detectable.
-- Applied fixes: 134 Python tests and 10 mocked dashboard behavior tests pass in the working repository. The approved patch is applied; the local Home plugin is updated with a backup. Obsidian was launched after the update, but native test commands are blocked until its CLI is enabled.
+- Git content review: two reachable commits and 248 unique text blobs scanned with detect-secrets 1.5.0 (all default detectors, network verification disabled); no candidates. This is a bounded pattern scan, not a guarantee that every sensitive string is detectable.
+- Applied fixes: 140 Python tests and 10 mocked dashboard behavior tests pass in the working repository. The approved patch is applied; the local Home plugin is updated with a backup. Obsidian was launched after the update, but native test commands are blocked until its CLI is enabled.
 - Public dependency resolved: claude-blog v2.1.1 was cloned anonymously at commit aec971ac511370c6216cd93776c9cf2fec97b32a. The required five scripts and four agents match the integrated plugin payload. Setup now points to the public release; a fixture rendered successfully with its HTML renderer.
 - The required video analyzer's pinned license restricts commercial use. Its terms must remain prominent in the README and setup guide.
 - The local write-ready doctor fails because Settings `site_url` is empty. This is a personalization requirement, not a reason to invent or ship a site URL for every user.
@@ -55,3 +55,11 @@ Obsidian 1.13.7 is installed and was launched for native testing. Its CLI return
 The read-only audit of personal historical runs reports one unfinished run, and one older completed run missing authorization evidence with a retained cached video. Those personal files are excluded from Git. The audit did not manufacture approvals or remove the retained video.
 
 The optional browser harness (`python3 plugins/youtubetoblog-home/tests/browser_smoke.py`) passed at 1440x1000, 900x700, and 640x700. It verified no horizontal overflow, a usable input height, no page errors, invalid-URL feedback, rights-chip accessibility state, setup/help, nine sidebar routes, and keyboard opening of a recent run. A short-window input compression defect was fixed during this pass. These results use synthetic Obsidian APIs and are not native acceptance.
+
+## Final privacy and release-notes pass on 2026-09-05
+
+Before the release-notes commit, the expanded repository patterns found no matches across all 255 historical blobs (248 text blobs). Independent detect-secrets 1.5.0 found no candidates in that text history or in a separate 212-file copy of the current Git file selection. Network verification was disabled, so no candidate values were sent to providers. No ignored files were tracked. Five representative environment/key filenames were verified as ignored.
+
+All six tracked screenshots have been visually inspected across the review. The two older screenshots contain historical queue IDs and article status, not credentials. Four supplied screenshots contain display geometry and DPI metadata; the other two contain no metadata fields. Historical screenshot scores remain explicitly qualified in the README.
+
+The full release checker passed, including 140 Python tests and 10 dashboard tests. Ruff, Home JavaScript syntax, and diff whitespace checks passed. The changelog now includes the unreleased preview changes, upgrade guidance, dependency restrictions, evidence, and remaining acceptance work. No stable release or public-launch acceptance is asserted.

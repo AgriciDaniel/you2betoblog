@@ -3,6 +3,24 @@
 from __future__ import annotations
 
 import release_check
+import pytest
+
+
+@pytest.mark.parametrize("prefix,suffix,kind", [
+    ("github_pat_", "A" * 50, "github-token"),
+    ("ghs_", "A" * 30, "github-token"),
+    ("AKIA", "A" * 16, "aws-access-key"),
+    ("xoxb-", "1" * 30, "slack-token"),
+    ("gsk_", "A" * 40, "groq-key"),
+    ("postgres://", "user:password" + "@" + "db.example.invalid", "credential-url"),
+])
+def test_additional_credentials_are_redacted(tmp_path, prefix, suffix, kind):
+    note = tmp_path / "config.txt"
+    value = prefix + suffix
+    note.write_text(value)
+    findings = release_check.scan_sensitive(tmp_path, [note])
+    assert any(finding["kind"] == kind for finding in findings)
+    assert value not in str(findings)
 
 
 def test_sensitive_scan_reports_location_and_kind_only(tmp_path):
