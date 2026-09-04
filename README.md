@@ -69,6 +69,10 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) for checks and [SECURITY.md](SECURITY.md
 
 Exact dependency versions and source links are recorded in `_system/plugin-lock.json` and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
+## Contributors
+
+- Benjamin ([@avalonreset](https://github.com/avalonreset))
+
 ## License
 
 This repository's original code is MIT licensed; see [LICENSE](LICENSE). Dependencies retain their own licenses.
