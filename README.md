@@ -1,4 +1,4 @@
-# you2toblog
+# you2betoblog
 
 Turn a YouTube video into a reviewable blog article inside Obsidian.
 
