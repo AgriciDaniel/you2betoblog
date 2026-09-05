@@ -4,6 +4,10 @@ Turn a YouTube video into a reviewable blog article inside Obsidian.
 
 Collect the source, inspect its transcript and frames, approve an article direction, and finish the draft in Writing Studio. The video, article, approvals, and evaluation stay connected in your vault.
 
+## Watch demo
+
+[Watch the demo on YouTube](https://www.youtube.com/watch?v=L1Ub6s8XEcw)
+
 **Preview status:** public-release acceptance is still in progress. See [acceptance and release evidence](docs/ACCEPTANCE.md) before relying on this workflow. The setup guide pins the public claude-blog release. The required video analyzer restricts commercial use. Read the [setup prerequisites](docs/SETUP.md) before installing.
 
 ![Home dashboard with video input, rights and writing mode selectors, navigation, and recent runs](docs/images/home-dashboard.png)
